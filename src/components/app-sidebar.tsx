@@ -1,13 +1,19 @@
 "use client"
-import {  Trash, Star, Clock, Home} from "lucide-react"
+import { Trash, Star, Clock, Home, User } from "lucide-react"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
- 
+import StorageSize from "./storage-size";
+
 
 const items = [
   {
     title: "My Drive",
     url: "/dashboard/my-drive",
     icon: Home,
+  },
+  {
+    title: "Profile",
+    url: "/dashboard/profile",
+    icon: User,
   },
   {
     title: "Starred",
@@ -28,30 +34,29 @@ const items = [
 
 export function AppSidebar() {
   return (
-   <Sidebar variant="floating" >
-    <SidebarHeader>
-    <SidebarMenu>
-      <SidebarMenuItem>
-            Drive
-      </SidebarMenuItem>
-    </SidebarMenu>
-  </SidebarHeader>
+    <Sidebar variant="floating" >
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
 
       <SidebarContent  >
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-                
+
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton  asChild>
+                  <SidebarMenuButton asChild>
                     <a href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                
+
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -59,11 +64,12 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem >
+            <StorageSize />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   )
 }
