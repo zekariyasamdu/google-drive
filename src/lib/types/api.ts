@@ -1,10 +1,16 @@
-export type DriveDataType = {
+export type TFile = {
   id: string;
   name: string;
-  type: "File" | "Folder" | "root";
-  parent: string | null;
-  url: string | null;
-  size: string | null;
+  type: "File";
+  parent: string;
+  url: string;
+  size: string;
 };
 
+export type TFolder = {
+  id: string;
+  name: string;
+  type: "Folder";
+  parent: string | null;
+};
 

@@ -1,83 +1,83 @@
-import type { DriveDataType } from "~/lib/types/api";
+import type { TFolder, TFile } from "~/lib/types/api";
 
 export function useDriveData() {
-  const rootId = "1";
-  const projectsId = "2";
-  const imagesId = "3";
-  const schoolId = "4";
 
-  const data: DriveDataType[] = [
+  const folders: TFolder[] = [
     {
-      id: rootId,
-      name: "My Drive",
-      type: "root",
+      id: "fld-001",
+      name: "Documents",
+      type: "Folder",
       parent: null,
-      url: "",
-      size: "",
     },
-
-    // ------- Folders -------
     {
-      id: projectsId,
+      id: "fld-002",
       name: "Projects",
       type: "Folder",
-      parent: rootId,
-      url: "",
-      size: "",
+      parent: "fld-001",
     },
     {
-      id: imagesId,
+      id: "fld-003",
       name: "Images",
       type: "Folder",
-      parent: rootId,
-      url: "",
-      size: "",
+      parent: "fld-001",
     },
     {
-      id: schoolId,
-      name: "School",
+      id: "fld-004",
+      name: "Music",
       type: "Folder",
-      parent: rootId,
-      url: "",
-      size: "",
-    },
-
-    // ------- Files in root -------
-    {
-      id: "10",
-      name: "resume.pdf",
-      type: "File",
-      parent: rootId,
-      url: "/files/resume.pdf",
-      size: "1.2 MB",
+      parent: null,
     },
     {
-      id: "11",
-      name: "todo.txt",
-      type: "File",
-      parent: rootId,
-      url: "/files/todo.txt",
-      size: "4 KB",
-    },
-
-    // ------- Files inside Projects -------
-    {
-      id: "12",
-      name: "portfolio.zip",
-      type: "File",
-      parent: projectsId,
-      url: "/files/portfolio.zip",
-      size: "22 MB",
-    },
-    {
-      id: "13",
-      name: "landing-page.png",
-      type: "File",
-      parent: projectsId,
-      url: "/files/landing-page.png",
-      size: "540 KB",
+      id: "fld-005",
+      name: "2025",
+      type: "Folder",
+      parent: "fld-002",
     },
   ];
 
+  const files: TFile[] = [
+    {
+      id: "file-001",
+      name: "resume.pdf",
+      type: "File",
+      parent: "fld-001",
+      url: "/files/resume.pdf",
+      size: "142 KB",
+    },
+    {
+      id: "file-002",
+      name: "design-sketch.png",
+      type: "File",
+      parent: "fld-003",
+      url: "/files/design-sketch.png",
+      size: "2.1 MB",
+    },
+    {
+      id: "file-003",
+      name: "app-plan.md",
+      type: "File",
+      parent: "fld-002",
+      url: "/files/app-plan.md",
+      size: "28 KB",
+    },
+    {
+      id: "file-004",
+      name: "lofi.mp3",
+      type: "File",
+      parent: "fld-004",
+      url: "/files/lofi.mp3",
+      size: "3.7 MB",
+    },
+    {
+      id: "file-005",
+      name: "report-jan.txt",
+      type: "File",
+      parent: "fld-005",
+      url: "/files/report-jan.txt",
+      size: "9 KB",
+    },
+  ];
+
+  const data = {folders, files}
   return data;
 }

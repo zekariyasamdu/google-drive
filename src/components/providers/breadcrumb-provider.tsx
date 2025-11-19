@@ -1,26 +1,45 @@
-"use client"
-// TODO: make breadcrumbs appear when a folder is clicked
-// TODO: make breadcrumbs disappear when a breadcumb previous to them is clicked
+"use client";
 import React from "react";
-import {BreadcrumbContext} from "~/contexts/breadcrub-context";
+import { BreadcrumbContext } from "~/contexts/breadcrub-context";
 import { useDriveData } from "~/hooks/use-drive-data";
-import type { DriveDataType } from "~/lib/types/api";
 
-export default function BreadcrumbProvider({ children }: { children: React.ReactNode }) {
+export default function BreadcrumbProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const driveData = useDriveData();
-  const [currentCrumbId, _setCurrentCrumbId] = React.useState("1");
-  const [breadcrumbs, _setBreadcrumbs] = React.useState<{ id: string, name: string}[]>([])
+  const [currentCrumbId, _setCurrentCrumbId] = React.useState<string | null>(null);
+  const [breadcrumbs, _setBreadcrumbs] = React.useState<
+    { id: string; name: string }[]
+  >([]);
 
-  const setCurrentcrumbId = React.useCallback((id: string) => {
+  const setCurrentcrumbId = React.useCallback((id: string | null) => {
     _setCurrentCrumbId(id);
+
+    if (id === null) {
+      _setBreadcrumbs([]);
+      return;
+    }
+
+    _setBreadcrumbs((prev) => {
+      const index = prev.findIndex((c) => c.id === id);
+      if (index === -1) return prev;
+      return prev.slice(0, index + 1);
+    });
   }, []);
 
-  const setBreadcrumbs = React.useCallback((crumb: { id: string, name: string }) => {
-    _setBreadcrumbs(i => [...i, crumb]);
-  }, []);
+  const setBreadcrumbs = React.useCallback(
+    (crumb: { id: string; name: string }) => {
+      _setBreadcrumbs((i) => [...i, crumb]);
+    },
+    [],
+  );
 
-  const filteredData: DriveDataType[] = React.useMemo(() => {
-    return driveData.filter(item => item.parent === currentCrumbId);
+  const filteredData = React.useMemo(() => {
+    const filteredFolder = driveData.folders.filter((item) => item.parent === currentCrumbId);
+    const filteredFile = driveData.files.filter((item) => item.parent === currentCrumbId);
+    return { folder: filteredFolder, file: filteredFile }
   }, [driveData, currentCrumbId]);
 
   const value = React.useMemo(() => {
@@ -31,10 +50,16 @@ export default function BreadcrumbProvider({ children }: { children: React.React
       setBreadcrumbs,
       data: filteredData,
     };
-  }, [currentCrumbId, setCurrentcrumbId, breadcrumbs, setBreadcrumbs, filteredData,]);
+  }, [
+    currentCrumbId,
+    setCurrentcrumbId,
+    breadcrumbs,
+    setBreadcrumbs,
+    filteredData,
+  ]);
 
   return (
-    <BreadcrumbContext.Provider value={value} >
+    <BreadcrumbContext.Provider value={value}>
       {children}
     </BreadcrumbContext.Provider>
   );

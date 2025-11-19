@@ -1,5 +1,6 @@
-import { Folder, File, Ellipsis } from "lucide-react";
-import { Card, CardAction, CardHeader, CardTitle } from "~/components/ui/card";
+import { File, Ellipsis } from "lucide-react";
+import Link from "next/link";
+import { Card, CardAction, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,16 +8,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
-import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
-import type { TFolder } from "~/lib/types/api";
+import type { TFile } from "~/lib/types/api";
 
-export const FolderItems = ({ data }: { data: TFolder }) => {
-  const { setCurrentcrumbId, setBreadcrumbs } = useNavigateBreadcrumbs()
-  function breadcrumbModifier() {
-    setCurrentcrumbId(data.id);
-    setBreadcrumbs({ id: data.id, name: data.name });
-  }
-
+export const FileItems = ({ data }: { data: TFile }) => {
   return (
     <Card className="w-1/6 h-45 gap-2 relative">
       <CardAction className="absolute right-2 top-2">
@@ -39,9 +33,10 @@ export const FolderItems = ({ data }: { data: TFolder }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </CardAction>
-      <CardHeader >{data.type === "Folder" ? <Folder className="w-11 h-11" /> : <File className="w-11 h-11" />}</CardHeader>
+      <CardHeader > <File className="w-11 h-11" /> </CardHeader>
       <CardTitle className="pl-6">{data.name}</CardTitle>
-      <CardAction className="pl-6 text-blue-600 flex gap-3 cursor-pointer" onClick={breadcrumbModifier}>open</CardAction>
+      <CardDescription className="pl-6">{data.size}</CardDescription>
+      <CardAction className="pl-6 text-blue-600 flex gap-3 cursor-pointer"><Link href={data.url} target="_blank"> open file</Link> </CardAction>
     </Card>
   )
 }
