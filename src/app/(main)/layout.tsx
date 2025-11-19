@@ -1,6 +1,8 @@
+"use client"
 import type React from "react"
 import { AppSidebar } from "~/components/app-sidebar"
 import Header from "~/components/header"
+import BreadcrumbProvider from "~/components/providers/breadcrumb-provider"
 import { SidebarProvider } from "~/components/ui/sidebar"
 
 export default function MainLayout({
@@ -10,11 +12,13 @@ export default function MainLayout({
 }>) {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main className=" w-full">
-        <Header />
+      <BreadcrumbProvider>
+        <AppSidebar />
+        <main className=" w-full">
+          <Header />
           {children}
-      </main>
+        </main>
+      </BreadcrumbProvider>
     </SidebarProvider>
   )
 }

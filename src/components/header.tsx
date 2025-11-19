@@ -1,7 +1,9 @@
+import React from "react"
 import UploadButton from "./button/upload";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbPage } from "./ui/breadcrumb";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "./ui/breadcrumb";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group"
 import { Search } from "lucide-react";
+import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
 const Header = () => {
   return (
     <div className="flex flex-row gap-4 mt-3 ml-4">
@@ -31,23 +33,24 @@ const SearchInput = () => {
 }
 
 const Nav = () => {
+  const { setCurrentcrumbId, breadcrumbs } = useNavigateBreadcrumbs();
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="/">My Drive</BreadcrumbLink>
+          <BreadcrumbLink onClick={() => setCurrentcrumbId(null)} >My Drive</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/components">Folders</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-        </BreadcrumbItem>
+        {breadcrumbs?.map(item => (
+          <div className="flex gap-1.5 items-center" key={item.id}>
+            <BreadcrumbItem>
+              <BreadcrumbLink onClick={() => setCurrentcrumbId(item.id)} >{item.name}</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+          </div>
+        ))}
       </BreadcrumbList>
     </Breadcrumb>
-
   )
 }
 
