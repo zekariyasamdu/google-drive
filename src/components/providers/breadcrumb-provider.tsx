@@ -9,15 +9,15 @@ export default function BreadcrumbProvider({
   children: React.ReactNode;
 }) {
   const driveData = useDriveData();
-  const [currentCrumbId, _setCurrentCrumbId] = React.useState<string | null>(null);
+  const [currentCrumbId, _setCurrentCrumbId] = React.useState<string>("root");
   const [breadcrumbs, _setBreadcrumbs] = React.useState<
     { id: string; name: string }[]
   >([]);
 
-  const setCurrentcrumbId = React.useCallback((id: string | null) => {
+  const setCurrentcrumbId = React.useCallback((id: string) => {
     _setCurrentCrumbId(id);
 
-    if (id === null) {
+    if (id === "root") {
       _setBreadcrumbs([]);
       return;
     }

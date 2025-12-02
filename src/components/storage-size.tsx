@@ -5,8 +5,8 @@ export default function StorageSize() {
   return (
     <div className="w-full h-fit flex flex-col gap-2">
       <CardDescription>Storage</CardDescription>
-      <Progress value={50}/>
-      <CardDescription>4.5GB of 15GB used</CardDescription>
+      <Progress value={10}/>
+      <CardDescription>10MB of 100MB used</CardDescription>
     </div>
   )
 }

@@ -7,7 +7,7 @@ export function useDriveData() {
       id: "fld-001",
       name: "Documents",
       type: "Folder",
-      parent: null,
+      parent: "root",
     },
     {
       id: "fld-002",
@@ -25,7 +25,7 @@ export function useDriveData() {
       id: "fld-004",
       name: "Music",
       type: "Folder",
-      parent: null,
+      parent: "root",
     },
     {
       id: "fld-005",

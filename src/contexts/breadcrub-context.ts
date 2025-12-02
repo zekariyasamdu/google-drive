@@ -3,10 +3,10 @@ import { createContext } from "react";
 import type { TFolder, TFile } from "~/lib/types/api";
 
 type BreadcrumbContextType = {
-  currentCrumbId: string | null
+  currentCrumbId: string 
   breadcrumbs: { id: string, name: string }[] | null
   setBreadcrumbs: (crumb: { id: string, name: string }) => void
-  setCurrentcrumbId: (id: string | null) => void
+  setCurrentcrumbId: (id: string) => void
   data: { folder: TFolder[], file: TFile[] }
 };
 
