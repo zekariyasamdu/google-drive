@@ -1,15 +1,16 @@
-"use client"
 import React from "react"
 import { FileItems } from "~/components/cards/file-item";
 import { FolderItems } from "~/components/cards/folder-items";
-import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
+import { db } from "~/server/db";
+import { files as filesSchema, folder as folderSchema } from "~/server/db/schema";
 
-const Dashboard = () => {
-  const driveData = useNavigateBreadcrumbs();
+const Dashboard = async () => {
+  const folders = await db.select().from(folderSchema);
+  const files = await db.select().from(filesSchema);
   return (
     <div className=" w-full flex flex-row flex-wrap gap-10 pl-10 ml-auto mt-5">
-      {driveData.data.folder.map(item => ( <FolderItems data={item} key={item.id} />))}
-      {driveData.data.file.map(item => ( <FileItems data={item} key={item.id} />))}
+      <FolderItems data={folders} />
+      <FileItems data={files} />
     </div>
   )
 }

@@ -1,13 +1,11 @@
 "use client"
 import { createContext } from "react";
-import type { TFolder, TFile } from "~/lib/types/api";
 
 type BreadcrumbContextType = {
-  currentCrumbId: string 
-  breadcrumbs: { id: string, name: string }[] | null
-  setBreadcrumbs: (crumb: { id: string, name: string }) => void
-  setCurrentcrumbId: (id: string) => void
-  data: { folder: TFolder[], file: TFile[] }
+  currentCrumbId: number | null
+  breadcrumbs: { id: number, name: string }[] | null
+  setBreadcrumbs: (crumb: { id: number, name: string }) => void
+  setCurrentcrumbId: (id: number | null) => void
 };
 
 export const BreadcrumbContext = createContext<BreadcrumbContextType>(

@@ -1,23 +1,21 @@
 "use client";
 import React from "react";
 import { BreadcrumbContext } from "~/contexts/breadcrub-context";
-import { useDriveData } from "~/hooks/use-drive-data";
 
 export default function BreadcrumbProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const driveData = useDriveData();
-  const [currentCrumbId, _setCurrentCrumbId] = React.useState<string>("root");
+  const [currentCrumbId, _setCurrentCrumbId] = React.useState<number | null>(null);
   const [breadcrumbs, _setBreadcrumbs] = React.useState<
-    { id: string; name: string }[]
+    { id: number; name: string }[]
   >([]);
 
-  const setCurrentcrumbId = React.useCallback((id: string) => {
+  const setCurrentcrumbId = React.useCallback((id: number | null) => {
     _setCurrentCrumbId(id);
 
-    if (id === "root") {
+    if (id === null) {
       _setBreadcrumbs([]);
       return;
     }
@@ -30,17 +28,11 @@ export default function BreadcrumbProvider({
   }, []);
 
   const setBreadcrumbs = React.useCallback(
-    (crumb: { id: string; name: string }) => {
+    (crumb: { id: number; name: string }) => {
       _setBreadcrumbs((i) => [...i, crumb]);
     },
     [],
   );
-
-  const filteredData = React.useMemo(() => {
-    const filteredFolder = driveData.folders.filter((item) => item.parent === currentCrumbId);
-    const filteredFile = driveData.files.filter((item) => item.parent === currentCrumbId);
-    return { folder: filteredFolder, file: filteredFile }
-  }, [driveData, currentCrumbId]);
 
   const value = React.useMemo(() => {
     return {
@@ -48,14 +40,12 @@ export default function BreadcrumbProvider({
       setCurrentcrumbId,
       breadcrumbs,
       setBreadcrumbs,
-      data: filteredData,
     };
   }, [
     currentCrumbId,
     setCurrentcrumbId,
     breadcrumbs,
     setBreadcrumbs,
-    filteredData,
   ]);
 
   return (

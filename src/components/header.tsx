@@ -38,7 +38,7 @@ const Nav = () => {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink onClick={() => setCurrentcrumbId("root")} >My Drive</BreadcrumbLink>
+          <BreadcrumbLink onClick={() => setCurrentcrumbId(null)} >My Drive</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         {breadcrumbs?.map(item => (
