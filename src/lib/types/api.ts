@@ -1,16 +1,14 @@
 export type TFile = {
-  id: string;
+  id: number;
   name: string;
-  type: "File";
-  parent: string;
+  parent: number | null;
   url: string;
   size: string;
 };
 
 export type TFolder = {
-  id: string;
+  id: number;
   name: string;
-  type: "Folder";
-  parent: string | null;
+  parent: number | null;
 };
 
