@@ -1,18 +1,16 @@
-import React from "react"
+import React from "react";
 import { FileItems } from "~/components/cards/file-item";
 import { FolderItems } from "~/components/cards/folder-items";
-import { db } from "~/server/db";
-import { files as filesSchema, folder as folderSchema } from "~/server/db/schema";
 
+import { QUERIES } from "~/server/db/queries";
 const Dashboard = async () => {
-  const folders = await db.select().from(folderSchema);
-  const files = await db.select().from(filesSchema);
+  const [folders, files] = await Promise.all([QUERIES.getFolders(), QUERIES.getFiles()]);
+
   return (
-    <div className=" w-full flex flex-row flex-wrap gap-10 pl-10 ml-auto mt-5">
+    <div className="mt-5 ml-auto flex w-full flex-row flex-wrap gap-10 pl-10">
       <FolderItems data={folders} />
       <FileItems data={files} />
     </div>
-  )
-}
+  );
+};
 export default Dashboard;
-
