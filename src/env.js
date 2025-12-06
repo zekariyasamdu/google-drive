@@ -11,11 +11,10 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
-    SINGLESTORE_PASS: z.string(),
-    SINGLESTORE_USER: z.string(),
-    SINGLESTORE_HOST: z.string(),
-    SINGLESTORE_PORT: z.string(),
-    SINGLESTORE_DB_NAME: z.string(),
+    BETTER_AUTH_SECRET: z.string(),
+    BETTER_AUTH_URL: z.string().url(),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
   },
   /**
    * Specify your client-side environment variables schema here. This way you can ensure the app
@@ -23,7 +22,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_DOMAIN: z.string()
   },
 
   /**
@@ -33,11 +32,11 @@ export const env = createEnv({
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
-    SINGLESTORE_PASS: process.env.SINGLESTORE_PASS,
-    SINGLESTORE_USER: process.env.SINGLESTORE_USER,
-    SINGLESTORE_HOST: process.env.SINGLESTORE_HOST,
-    SINGLESTORE_PORT: process.env.SINGLESTORE_PORT,
-    SINGLESTORE_DB_NAME: process.env.SINGLESTORE_DB_NAME,
+    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    NEXT_PUBLIC_DOMAIN: process.env.NEXT_PUBLIC_DOMAIN
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

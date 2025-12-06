@@ -1,27 +1,28 @@
-import "server-only"
-import { index, text, bigint, singlestoreTableCreator } from "drizzle-orm/singlestore-core";
+// import "server-only"
+import {
+  pgTable,
+  bigint,
+  text,
+  index,
+} from "drizzle-orm/pg-core";
 
-export const createTable = singlestoreTableCreator(
-  (name) => `google_drive_${name}`,
-)
+export const filesSchema = pgTable( "file_table", {
+    id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
+    name: text("name").notNull(),
+    parent: bigint("parent_id", { mode: "number" }), 
+    url: text("url").notNull(),
+    size: text("size").notNull(),
+  },
+  (t) => [index("files_parent_id_idx").on(t.parent)]
+);
 
-export const files = createTable("file_table", {
-  id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
-  name: text("name").notNull(),
-  parent: bigint("parent_id", { mode: "number" }),
-  url: text("url").notNull(),
-  size: text("size").notNull()
-}, (t) => {
-  return [index("parent_id").on(t.parent)]
-});
+export const foldersSchema = pgTable( "folder_table", {
+    id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
+    name: text("name").notNull(),
+    parent: bigint("parent_id", { mode: "number" }), 
+  },
+  (t) => [index("folder_parent_id_idx").on(t.parent)]
+);
 
-export const folder = createTable("folder_table", {
-  id: bigint("id", { mode: "number" }).primaryKey().autoincrement(),
-  name: text("name").notNull(),
-  parent: bigint("parent_id", { mode: "number" }),
-}, (t) => {
-  return [index("parent_id").on(t.parent)]
-});
-
-
-
+//better-auth auth-schema
+export * from "./auth-schema"
