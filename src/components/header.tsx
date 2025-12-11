@@ -1,41 +1,62 @@
-import React from "react"
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "./ui/breadcrumb";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group"
+"use client";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from "./ui/breadcrumb";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { Search } from "lucide-react";
 import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
-import SignIn from "./button/signin";
-import SignOut from "./button/signout";
-import { signIn } from "~/lib/auth/auth-client";
-import { useMutation } from "@tanstack/react-query";
+import { authClient, signOut } from "~/lib/auth/auth-client";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
+
 const Header = () => {
-
-  const signupMutaion = useMutation({
+  const route = useRouter();
+  const signoutMutaion = useMutation({
     mutationKey: ["signup"],
-    mutationFn: () => handelSignin()
-  })
+    mutationFn: () => handelSignout(),
+  });
 
-  const handelSignin = async () => {
-    const res = await signIn();
-    console.log(res)
-  }
+  const handelSignout = async () => {
+    const res = await signOut();
+    console.log(res.data);
+    route.push("/auth/login")
+  };
+
+  const userInfo = useQuery({
+    queryKey: ["usr"],
+    queryFn: async () => {
+      return await authClient.getSession();
+    },
+  });
+
+  console.log(userInfo.data);
 
   return (
-    <div className="flex flex-row gap-4 mt-3 ml-4">
-      <div className="flex flex-col gap-4 mt-3 ml-4 w-fit">
+    <div className="mt-3 ml-4 flex flex-row gap-4">
+      <div className="mt-3 ml-4 flex w-fit flex-col gap-4">
         <SearchInput />
         <Nav />
       </div>
-      <div className="flex gap-5 ml-auto mr-3 mt-3">
-        <SignIn onClick={() => signupMutaion.mutate()} />
-        <SignOut />
+      <div className="mt-3 mr-3 ml-auto flex gap-5">
+        <Button
+          className="w-25"
+          onClick={() => signoutMutaion.mutate()}
+        >
+          Signout
+        </Button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const SearchInput = () => {
   return (
-    <nav >
+    <nav>
       <InputGroup>
         <InputGroupInput placeholder="Search In Drive" />
         <InputGroupAddon>
@@ -43,9 +64,8 @@ const SearchInput = () => {
         </InputGroupAddon>
       </InputGroup>
     </nav>
-  )
-
-}
+  );
+};
 
 const Nav = () => {
   const { setCurrentcrumbId, breadcrumbs } = useNavigateBreadcrumbs();
@@ -53,20 +73,24 @@ const Nav = () => {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink onClick={() => setCurrentcrumbId(null)} >My Drive</BreadcrumbLink>
+          <BreadcrumbLink onClick={() => setCurrentcrumbId(null)}>
+            My Drive
+          </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
-        {breadcrumbs?.map(item => (
-          <div className="flex gap-1.5 items-center" key={item.id}>
+        {breadcrumbs?.map((item) => (
+          <div className="flex items-center gap-1.5" key={item.id}>
             <BreadcrumbItem>
-              <BreadcrumbLink onClick={() => setCurrentcrumbId(item.id)} >{item.name}</BreadcrumbLink>
+              <BreadcrumbLink onClick={() => setCurrentcrumbId(item.id)}>
+                {item.name}
+              </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
           </div>
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

@@ -28,7 +28,7 @@ export const signIn = () => {
      * disable the automatic redirect to the provider. 
      * @default false
      */
-    disableRedirect: true,
+    disableRedirect: false,
   })
 }
 
@@ -36,3 +36,4 @@ export const signIn = () => {
 export const signOut = () => {
   return authClient.signOut();
 }
+

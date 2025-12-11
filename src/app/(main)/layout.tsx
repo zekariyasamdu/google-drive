@@ -10,7 +10,6 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 
-
 export default function MainLayout({
   children,
 }: Readonly<{
