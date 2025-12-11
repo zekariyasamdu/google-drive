@@ -28,6 +28,13 @@ export const auth = betterAuth({
       clientSecret: env.GOOGLE_CLIENT_SECRET,
       accessType: "offline",
       prompt: "select_account consent",
+      mapProfileToUser: (profile) => {
+        return {
+          firstName: profile.given_name,
+          lastName: profile.family_name,
+          profilePicture:  profile.picture,
+        };
+      },
     },
   },
 });
