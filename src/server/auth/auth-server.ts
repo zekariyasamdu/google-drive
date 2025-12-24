@@ -2,14 +2,11 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { env } from "~/env";
 import { db } from "~/server/db";
-import {
-  user,
-  session,
-  account,
-  verification
-} from "../db/schema";
+import { user, session, account, verification } from "../db/schema";
+import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
+  plugins: [nextCookies()],
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -17,7 +14,7 @@ export const auth = betterAuth({
       session,
       account,
       verification,
-    }
+    },
   }),
   emailAndPassword: {
     enabled: true,
@@ -32,10 +29,9 @@ export const auth = betterAuth({
         return {
           firstName: profile.given_name,
           lastName: profile.family_name,
-          profilePicture:  profile.picture,
+          profilePicture: profile.picture,
         };
       },
     },
   },
 });
-

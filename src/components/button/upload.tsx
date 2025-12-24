@@ -1,13 +1,29 @@
-"use client"
-import { CloudUpload } from "lucide-react";
-import { Button } from "../ui/button";
+"use client";
+import { UploadButton } from "~/components/utiles/uploadthing";
 import { cn } from "~/lib/utils";
+// import "@uploadthing/react/styles.css";
 
-export default function UploadButton({ className, ...props }: {
-  className?: string 
+export default function UploadBtn({
+  className,
+}: {
+  className?: string;
 } & React.ComponentProps<"button">) {
   return (
-    <Button {...props} className={cn("w-25", className)}> <CloudUpload /> Upload </Button>
-  )
+    <UploadButton
+      className={cn(
+        className,
+        "ut-button:bg-primary ut-button:text-primary-foreground ut-button:p-1 ut-button:hover:bg-primary/90 ut-button:rounded-lg ut-button:px-6",
+      )}
+      endpoint="imageUploader"
+      onClientUploadComplete={(res) => {
+        // Do something with the response
+        console.log("Files: ", res);
+        alert("Upload Completed");
+      }}
+      onUploadError={(error: Error) => {
+        // Do something with the error.
+        alert(`ERROR! ${error.message}`);
+      }}
+    />
+  );
 }
-
