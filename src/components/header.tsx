@@ -33,7 +33,7 @@ const Header = () => {
       return await authClient.getSession();
     },
   });
-
+  
   console.log(userInfo.data);
 
   return (
