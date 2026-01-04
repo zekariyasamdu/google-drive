@@ -6,7 +6,7 @@ import { ourFileRouter } from "~/app/api/uploadthing/core";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Google Drive",
+  title: "Z-Keep",
   description: "A Google Drive type web app",
 };
 

@@ -8,12 +8,10 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
-import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 const SignupSchema = z
   .object({
@@ -33,7 +31,7 @@ const SignupSchema = z
     message: "Password do not match",
   });
 export default function SignupForm() {
-  const route = useRouter();
+  const router = useRouter();
   const form = useForm<z.infer<typeof SignupSchema>>({
     resolver: zodResolver(SignupSchema),
   });
@@ -46,18 +44,14 @@ export default function SignupForm() {
     });
     console.log(data);
   };
-
   const navToLogin = () => {
-    route.push("/auth/login");
+    router.push("/auth/login");
   };
+
   return (
-    <Card className="w-full h-full">
+
+    <div className="h-full w-full border-none p-4">
       <CardHeader className="relative">
-        <ChevronLeft
-          onClick={() => navToLogin()}
-          className="absolute left-4 hover:cursor-pointer"
-        />
-        <CardTitle className="ml-auto mr-auto">Signup</CardTitle>
       </CardHeader>
       <CardContent>
         <form id="form-login" onSubmit={form.handleSubmit(onSubmit)}>
@@ -147,17 +141,26 @@ export default function SignupForm() {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter className="mb-0 mt-3">
+      <CardFooter className="mb-0 mt-4">
         <CardAction className="w-full flex flex-col gap-4">
           <Button
             form="form-login"
             disabled={form.formState.isSubmitting}
             className="w-full"
           >
-            Signup
+            Create Account
+          </Button>
+          <Button
+            variant={"outline"}
+            id="form-login"
+            disabled={form.formState.isSubmitting}
+            className="w-full hover:text-primary"
+            onClick={() => navToLogin()}
+          >
+            Login
           </Button>
         </CardAction>
       </CardFooter>
-    </Card>
+    </div>
   );
 }

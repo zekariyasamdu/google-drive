@@ -7,8 +7,6 @@ import {
   CardAction,
   CardContent,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -50,14 +48,11 @@ function LoginForm() {
   };
 
   const navToSignup = () => {
-    router.push("/signup");
+    router.push("/auth/signup");
   };
 
   return (
-    <Card className="h-full w-full">
-      <CardHeader>
-        <CardTitle className="mr-auto ml-auto">Login</CardTitle>
-      </CardHeader>
+    <div className="h-full w-full border-none p-4">
       <CardContent>
         <form id="form-login" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
@@ -70,7 +65,7 @@ function LoginForm() {
                   <Input
                     {...field}
                     autoComplete="off"
-                    placeholder="root"
+                    placeholder="zekariyas_amd"
                     required
                     aria-invalid={fieldState.invalid}
                   />
@@ -93,7 +88,7 @@ function LoginForm() {
                     autoComplete="off"
                     type="password"
                     aria-invalid={fieldState.invalid}
-                    placeholder="root@1234"
+                    placeholder="Naruto@1234"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -118,17 +113,26 @@ function LoginForm() {
             variant={"outline"}
             id="form-login"
             disabled={form.formState.isSubmitting}
-            className="w-full"
+            className="w-full hover:text-primary"
             onClick={() => navToSignup()}
           >
             Signup
           </Button>
-          <Button className="w-25" onClick={() => signupMutaion.mutate()}>
-            google
+
+          <div className="flex items-center my-5 gap-2 ">
+            <div className="grow border-t border-border"></div>
+            <span className="bold text-xs uppercase ">
+              OR
+            </span>
+            <div className="grow border-t border-border"></div>
+          </div>
+
+          <Button variant={"ghost"}  onClick={() => signupMutaion.mutate()}>
+             Continue with Google
           </Button>
         </CardAction>
       </CardFooter>
-    </Card>
+    </div>
   );
 }
 
