@@ -1,7 +1,6 @@
 "use client";
 import { UploadButton } from "~/components/utiles/uploadthing";
 import { cn } from "~/lib/utils";
-// import "@uploadthing/react/styles.css";
 
 export default function UploadBtn({
   className,
@@ -12,7 +11,7 @@ export default function UploadBtn({
     <UploadButton
       className={cn(
         className,
-        "ut-button:bg-primary ut-button:text-primary-foreground ut-button:p-1 ut-button:hover:bg-primary/90 ut-button:rounded-lg ut-button:px-6",
+        "ut-button:bg-primary ut-label:none ut-button:text-primary-foreground ut-button:p-1 ut-button:hover:bg-primary/90 ut-button:rounded-lg ut-button:px-6",
       )}
       endpoint="imageUploader"
       onClientUploadComplete={(res) => {
