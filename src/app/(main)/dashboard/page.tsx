@@ -13,8 +13,9 @@ const Dashboard = async () => {
   if (!session) {
     redirect("/auth/login")
   }
+  const userId = session.user.id;
 
-  const [folders, files] = await Promise.all([QUERIES.getFolders(), QUERIES.getFiles()]);
+  const [folders, files] = await Promise.all([QUERIES.getFolders(userId), QUERIES.getFiles(userId)]);
 
   if (folders.length === 0 || folders.length === 0) {
     return (
