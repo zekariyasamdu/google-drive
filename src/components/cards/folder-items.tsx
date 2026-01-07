@@ -9,9 +9,9 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
-import type { TFolder } from "~/lib/types/api";
+import type { TFolderSelect } from "~/lib/types/db";
 
-export const FolderItems = ({ data }: { data: TFolder[] }) => {
+export const FolderItems = ({ data }: { data: TFolderSelect[] }) => {
   const { setCurrentcrumbId, setBreadcrumbs, currentCrumbId } = useNavigateBreadcrumbs()
   function breadcrumbModifier(id: number, name: string) {
     setCurrentcrumbId(id);

@@ -10,9 +10,9 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
-import type { TFile } from "~/lib/types/api";
+import type { TFileSelect } from "~/lib/types/db";
 
-export const FileItems = ({ data }: { data: TFile[] }) => {
+export const FileItems = ({ data }: { data: TFileSelect[] }) => {
   const { currentCrumbId } = useNavigateBreadcrumbs()
 
   const filteredData = () => {
