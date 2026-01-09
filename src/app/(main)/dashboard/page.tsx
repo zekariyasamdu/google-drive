@@ -16,8 +16,8 @@ const Dashboard = async () => {
   const userId = session.user.id;
 
   const [folders, files] = await Promise.all([QUERIES.getFolders(userId), QUERIES.getFiles(userId)]);
-
-  if (folders.length === 0 || folders.length === 0) {
+  console.log(files)
+  if (files.length === 0 && folders.length === 0) {
     return (
       <EmptyFolder />
 
