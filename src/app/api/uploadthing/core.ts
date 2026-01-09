@@ -34,7 +34,7 @@ export const ourFileRouter = {
         headers: await headers()
       })
       console.log("ses", session)
-      if (!session) throw new UploadThingError("Unauthorized");
+      if (!session) throw new Error("Unauthorized");
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
       const userId = session.user.id;
       console.log(input)
