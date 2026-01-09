@@ -1,5 +1,6 @@
 "use client";
 import { UploadButton } from "~/components/utiles/uploadthing";
+import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
 import { cn } from "~/lib/utils";
 
 export default function UploadBtn({
@@ -7,6 +8,7 @@ export default function UploadBtn({
 }: {
   className?: string;
 } & React.ComponentProps<"button">) {
+  const { currentCrumbId } = useNavigateBreadcrumbs()
   return (
     <UploadButton
       className={cn(
@@ -14,6 +16,9 @@ export default function UploadBtn({
         "ut-button:bg-primary jjjjjj ut-button:text-primary-foreground ut-button:p-1 ut-button:hover:bg-primary/90 ut-button:rounded-lg ut-button:px-6",
       )}
       endpoint="imageUploader"
+      input={{
+        currentCrumbId,
+      }}
       onClientUploadComplete={(res) => {
         // Do something with the response
         console.log("Files: ", res);

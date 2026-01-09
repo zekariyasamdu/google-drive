@@ -1,3 +1,4 @@
+"use client"
 import UploadBtn from "../button/upload";
 import { Button } from "../ui/button";
 import {

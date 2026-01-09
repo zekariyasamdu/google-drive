@@ -1,9 +1,11 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
+import { auth } from "~/server/auth/auth-server";
+import { MUTATION } from "~/server/db/queries";
+import { headers } from "next/headers";
+import z from "zod";
 
 const f = createUploadthing();
-
-const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
@@ -18,26 +20,42 @@ export const ourFileRouter = {
       maxFileCount: 1,
     },
   })
+    .input(z.object({
+      currentCrumbId: z.number().nullable()
+    }))
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ req }) => {
+    .middleware(async ({ req, input }) => {
       // This code runs on your server before upload
-     // const user = await auth(req);
+      // const user = await auth(req);
 
       // If you throw, the user will not be able to upload
-     // if (!user) throw new UploadThingError("Unauthorized");
 
+      const session = await auth.api.getSession({
+        headers: await headers()
+      })
+      console.log("ses", session)
+      if (!session) throw new Error("Unauthorized");
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: 1 };
+      const userId = session.user.id;
+      console.log(input)
+      const parentId = input?.currentCrumbId 
+      return { userId, parentId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-
-      console.log("file url", file.ufsUrl);
+      const fileData = {
+        owner_id: String(metadata.userId),
+        name: file.name,
+        parent: metadata.parentId,
+        url: file.ufsUrl,
+        size: file.size.toString(),
+      }
+       await MUTATION.createFile(fileData)
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { uploadedBy: metadata.userId };
-    }),
+      return { success: true };
+    })
+  ,
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
