@@ -22,6 +22,7 @@ export function EmptyFolder() {
         <div className="flex gap-2">
           <CreateFolderDialog />
           <CreateFileDialog />
+
         </div>
       </EmptyContent>
       <Button

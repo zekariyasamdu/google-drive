@@ -16,16 +16,17 @@ export default function MainLayout({
 }>) {
   const queryClient = new QueryClient()
   return (
-    <SidebarProvider>
-      <BreadcrumbProvider>
-        <AppSidebar />
-        <QueryClientProvider client={queryClient}>
+
+    <QueryClientProvider client={queryClient}>
+      <SidebarProvider>
+        <BreadcrumbProvider>
+          <AppSidebar />
           <main className="w-full relative">
             <Header />
             {children}
           </main>
-        </QueryClientProvider>
-      </BreadcrumbProvider>
-    </SidebarProvider>
+        </BreadcrumbProvider>
+      </SidebarProvider >
+    </QueryClientProvider>
   )
 }
