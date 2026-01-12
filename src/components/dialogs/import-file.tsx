@@ -1,50 +1,35 @@
 "use client"
+import { File } from "lucide-react";
+import UploadZone from "../button/dropzone";
 import UploadBtn from "../button/upload";
 import { Button } from "../ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog"
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
 
-export default function CreateFileDialog() {
+export default function CreateFileDialog({ variant }: { variant?: "sidebar" }) {
   return (
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          <Button variant="outline">Import File</Button>
+          {variant == "sidebar" ?
+            <div className="flex gap-2 p-2 flex-row cursor-pointer">
+              <File />
+              <span >  Import File</span>
+            </div>
+            :
+            <Button className="w-20" variant="outline">File</Button>
+          }
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
-            </DialogDescription>
+            <DialogTitle>Add Files</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4">
-            <div className="grid gap-3">
-              <Label htmlFor="name-1">Name</Label>
-              <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="username-1">Username</Label>
-              <Input id="username-1" name="username" defaultValue="@peduarte" />
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <UploadBtn className=" border-border" />
-          </DialogFooter>
+          <UploadZone />
         </DialogContent>
       </form>
     </Dialog>

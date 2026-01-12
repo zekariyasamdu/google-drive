@@ -12,6 +12,7 @@ import { Spinner } from "../ui/spinner";
 import { authClient } from "~/lib/auth/auth-client";
 import type { TFolderInsert } from "~/lib/types/db";
 import { createFolderAction } from "~/action/mutation-actions";
+import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
 
 const createFolderSchema = z.object({
   name: z.string().min(1),
@@ -19,7 +20,7 @@ const createFolderSchema = z.object({
 
 export default function CreateFolderForm() {
   const router = useRouter();
-
+  const { currentCrumbId } = useNavigateBreadcrumbs()
   const userInfo = useQuery({
     queryKey: ["usr"],
     queryFn: async () => {
@@ -37,7 +38,7 @@ export default function CreateFolderForm() {
       const folderData: TFolderInsert = {
         name: formData.name,
         owner_id: userInfo.data.data.user.id,
-        parent: null,
+        parent: currentCrumbId,
       };
 
       return await createFolderAction(folderData);
