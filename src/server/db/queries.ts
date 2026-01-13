@@ -23,4 +23,10 @@ export const MUTATION = {
   createFile: (files: TFileInsert) => {
     return db.insert(filesSchema).values(files);
   },
+  deleteFolder: (folder_id: number) => {
+    return db.delete(foldersSchema).where(eq(foldersSchema.id, folder_id));
+  },
+  deleteFiles: (file_id: number) => {
+    return db.delete(filesSchema).where(eq(filesSchema.id, file_id));
+  },
 }

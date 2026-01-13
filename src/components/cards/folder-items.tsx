@@ -1,5 +1,8 @@
 "use client"
+import { useMutation } from "@tanstack/react-query";
 import { Folder, Ellipsis } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { deleteFolderAction } from "~/action/mutation-actions";
 import { Card, CardAction, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   DropdownMenu,
@@ -13,6 +16,17 @@ import type { TFolderSelect } from "~/lib/types/db";
 
 export const FolderItems = ({ data }: { data: TFolderSelect[] }) => {
   const { setCurrentcrumbId, setBreadcrumbs, currentCrumbId } = useNavigateBreadcrumbs()
+  const route = useRouter()
+  const deleteMutation = useMutation({
+    mutationKey: ["deleteFolder"],
+    mutationFn: async (folder_id: number) => {
+      await deleteFolderAction(folder_id)
+    },
+    onMutate: ()=>{
+      route.refresh()
+    }
+  })
+
   function breadcrumbModifier(id: number, name: string) {
     setCurrentcrumbId(id);
     setBreadcrumbs({ id, name });
@@ -35,12 +49,12 @@ export const FolderItems = ({ data }: { data: TFolderSelect[] }) => {
               <DropdownMenuContent className="w-56" align="start">
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
-                    Open
+                    Star
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     Rename
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => deleteMutation.mutate(item.id)}>
                     Remove
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

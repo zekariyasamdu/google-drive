@@ -1,4 +1,3 @@
-import "server-only"
 import {
   pgTable,
   bigint,
@@ -9,11 +8,12 @@ import { user } from "./auth-schema";
 
 export const filesSchema = pgTable("file_table", {
   id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
-  owner_id: text("owner_id").notNull().references(()=> user.id, {onDelete: "cascade"}),
+  owner_id: text("owner_id").notNull().references(() => user.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   parent: bigint("parent_id", { mode: "number" }),
   url: text("url").notNull(),
   size: text("size").notNull(),
+  fileKey: text("key").notNull()
 },
   (t) => [index("files_parent_id_idx").on(t.parent)]
 );
@@ -21,7 +21,7 @@ export const filesSchema = pgTable("file_table", {
 export const foldersSchema = pgTable("folder_table", {
   id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   name: text("name").notNull(),
-  owner_id: text("owner_id").notNull().references(()=> user.id, {onDelete: "cascade"}),
+  owner_id: text("owner_id").notNull().references(() => user.id, { onDelete: "cascade" }),
   parent: bigint("parent_id", { mode: "number" }),
 },
   (t) => [index("folder_parent_id_idx").on(t.parent)]

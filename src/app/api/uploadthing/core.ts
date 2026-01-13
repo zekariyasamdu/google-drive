@@ -33,12 +33,10 @@ export const ourFileRouter = {
       const session = await auth.api.getSession({
         headers: await headers()
       })
-      console.log("ses", session)
       if (!session) throw new Error("Unauthorized");
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
       const userId = session.user.id;
-      console.log(input)
-      const parentId = input?.currentCrumbId 
+      const parentId = input?.currentCrumbId
       return { userId, parentId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
@@ -49,8 +47,9 @@ export const ourFileRouter = {
         parent: metadata.parentId,
         url: file.ufsUrl,
         size: file.size.toString(),
+        fileKey: file.key
       }
-       await MUTATION.createFile(fileData)
+      await MUTATION.createFile(fileData)
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { success: true };
