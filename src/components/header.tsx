@@ -13,11 +13,6 @@ import { authClient, signOut } from "~/lib/auth/auth-client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "@radix-ui/react-dialog";
-import CreateFolderDialog from "./dialogs/create-folder";
-import CreateFileDialog from "./dialogs/import-file";
-import { DialogHeader } from "./ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 const Header = () => {
   const route = useRouter();
@@ -28,7 +23,6 @@ const Header = () => {
 
   const handelSignout = async () => {
     const res = await signOut();
-    console.log(res.data);
     route.push("/auth/login")
   };
 

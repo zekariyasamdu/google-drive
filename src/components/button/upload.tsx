@@ -23,7 +23,6 @@ export default function UploadBtn({
       }}
       onClientUploadComplete={(res) => {
         // Do something with the response
-        console.log("Files: ", res);
         router.refresh();
       }}
       onUploadError={(error: Error) => {

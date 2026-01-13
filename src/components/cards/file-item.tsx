@@ -12,9 +12,29 @@ import {
 import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
 import type { TFileSelect } from "~/lib/types/db";
 import { filesize } from "filesize";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { deleteFileAction } from "~/action/mutation-actions";
 
 export const FileItems = ({ data }: { data: TFileSelect[] }) => {
   const { currentCrumbId } = useNavigateBreadcrumbs()
+  const route = useRouter()
+  const deleteMutation = useMutation({
+    mutationKey: ["deleteFolder"],
+    mutationFn: async ({
+      file_id,
+      file_key,
+    }: {
+      file_id: number
+      file_key: string
+    }) => {
+      await deleteFileAction(file_id, file_key)
+    },
+    onMutate: () => {
+      route.refresh()
+    }
+  })
+
   const filteredData = () => {
     const filteredFile = data.filter((item) => item.parent === currentCrumbId);
     return filteredFile;
@@ -37,7 +57,7 @@ export const FileItems = ({ data }: { data: TFileSelect[] }) => {
                   <DropdownMenuItem>
                     Rename
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => deleteMutation.mutate({ file_id: item.id, file_key: item.fileKey })}>
                     Remove
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
