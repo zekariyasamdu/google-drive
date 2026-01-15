@@ -15,9 +15,12 @@ import { filesize } from "filesize";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { deleteFileAction } from "~/action/mutation-actions";
+import RenameDialog from "../dialogs/rename-items";
+import { useState } from "react";
 
 export const FileItems = ({ data }: { data: TFileSelect[] }) => {
-  const { currentCrumbId } = useNavigateBreadcrumbs()
+  const { currentCrumbId, setCurrentcrumbId } = useNavigateBreadcrumbs()
+  const [isOpened, _toggleDialog] = useState(false)
   const route = useRouter()
   const deleteMutation = useMutation({
     mutationKey: ["deleteFolder"],
@@ -32,7 +35,10 @@ export const FileItems = ({ data }: { data: TFileSelect[] }) => {
     },
     onMutate: () => {
       route.refresh()
-    }
+    },
+    onSuccess() {
+      setCurrentcrumbId(null)
+    },
   })
 
   const filteredData = () => {
@@ -54,7 +60,7 @@ export const FileItems = ({ data }: { data: TFileSelect[] }) => {
                   <DropdownMenuItem>
                     Open
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => _toggleDialog(true)}>
                     Rename
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => deleteMutation.mutate({ file_id: item.id, file_key: item.fileKey })}>
@@ -63,6 +69,7 @@ export const FileItems = ({ data }: { data: TFileSelect[] }) => {
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
+            <RenameDialog variant="File" opened={isOpened} setIsOpen={_toggleDialog} itemId={item.id} fileKey={item.fileKey} />
           </CardAction>
           <CardHeader > <File className="w-11 h-11" /> </CardHeader>
           <CardTitle className="pl-6">{item.name}</CardTitle>
