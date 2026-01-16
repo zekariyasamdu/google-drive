@@ -19,14 +19,9 @@ const items = [
     icon: User,
   },
   {
-    title: "Starred",
-    url: "/starred",
+    title: "Star",
+    url: "/star",
     icon: Star,
-  },
-  {
-    title: "Recent",
-    url: "/recent",
-    icon: Clock,
   },
   {
     title: "Trash",

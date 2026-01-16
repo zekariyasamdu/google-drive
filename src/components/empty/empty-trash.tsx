@@ -1,5 +1,5 @@
 "use client"
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "./ui/empty";
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription } from "./../ui/empty";
 import { Trash } from "lucide-react";
 
 export function EmptyTrash() {
@@ -7,16 +7,14 @@ export function EmptyTrash() {
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <Trash />
+          <Trash/>
         </EmptyMedia>
         <EmptyTitle>No Items Yet</EmptyTitle>
         <EmptyDescription>
-          When you trash items they will show up here
+          You haven&apos;t imported any files yet. Get started by creating
+          your first Folder.
         </EmptyDescription>
       </EmptyHeader>
     </Empty>
   )
 }
-
-
-

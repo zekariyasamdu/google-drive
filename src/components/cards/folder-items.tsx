@@ -32,14 +32,25 @@ export const FolderItems = ({ data }: { data: TFolderSelect[] }) => {
   })
 
   const trashMutation = useMutation({
-    mutationKey: ["deleteFolder"],
-    mutationFn: async (folder_id: number) => {
-      await updateFolderAction(folder_id, {trash:true})
+    mutationKey: ["trashFolder"],
+    mutationFn: async (folderId: number) => {
+      await updateFolderAction(folderId, {trash:true})
     },
     onMutate: () => {
       route.refresh()
     }
   })
+
+  const starMutation = useMutation({
+    mutationKey: ["starFolder"],
+    mutationFn: async ({id, state}: {id: number, state: boolean}) => {
+      await updateFolderAction(id, { star: state })
+    },
+    onMutate: () => {
+      route.refresh()
+     }
+  })
+
 
   function breadcrumbModifier(id: number, name: string) {
     setCurrentcrumbId(id);
@@ -62,9 +73,15 @@ export const FolderItems = ({ data }: { data: TFolderSelect[] }) => {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="start">
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
+                  {item.star?
+                  <DropdownMenuItem onClick={()=> starMutation.mutate({id: item.id, state: false})}>
+                    Unstar
+                  </DropdownMenuItem>
+                    :
+                  <DropdownMenuItem onClick={()=> starMutation.mutate({id: item.id, state: true})}>
                     Star
                   </DropdownMenuItem>
+                  }
                   <DropdownMenuItem onClick={() => _toggleDialog(true)}>
                     Rename
                   </DropdownMenuItem>

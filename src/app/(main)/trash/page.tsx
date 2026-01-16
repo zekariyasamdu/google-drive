@@ -2,11 +2,11 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { FileItems } from "~/components/cards/file-item";
 import { FolderItems } from "~/components/cards/folder-items";
-import { EmptyTrash } from "~/components/empty-trash";
+import { EmptyTrash } from "~/components/empty/empty-trash";
 import { auth } from "~/server/auth/auth-server";
 import { QUERIES } from "~/server/db/queries";
 
-const Dashboard = async () => {
+const Trash = async () => {
   const session = await auth.api.getSession({
     headers: await headers()
   })
@@ -16,7 +16,6 @@ const Dashboard = async () => {
   const userId = session.user.id;
   const [folders, files] = await Promise.all([QUERIES.getFolders(userId), QUERIES.getFiles(userId)]);
   console.log(files.length, folders.length)
-
 
   const filterTrashFolders = folders.filter(t => t.trash === true);
   const filterTrashFiles = files.filter(t => t.trash === true);
@@ -33,4 +32,4 @@ const Dashboard = async () => {
     </div>
   );
 };
-export default Dashboard;
+export default Trash;
