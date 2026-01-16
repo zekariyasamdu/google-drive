@@ -1,9 +1,9 @@
 "use client"
 import { IconFolderCode } from "@tabler/icons-react"
-import { Button } from "./ui/button";
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyContent } from "./ui/empty";
-import CreateFolderDialog  from "./dialogs/create-folder";
-import CreateFileDialog from "./dialogs/import-file";
+import CreateFolderDialog from "../dialogs/create-folder"
+import CreateFileDialog from "../dialogs/import-file"
+import { Button } from "../ui/button"
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyContent } from "../ui/empty"
 
 export function EmptyFolder() {
   return (

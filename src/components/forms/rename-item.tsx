@@ -23,7 +23,7 @@ export default function RenameItemsForm(
     mutationKey: ["renameItem"],
     mutationFn: async (formData: z.infer<typeof createFolderSchema>) => {
       if (variant === "File" && fileKey !== undefined) {
-        return await updateFileAction(itemId, fileKey, { name: formData.name });
+        return await updateFileAction(itemId, { name: formData.name }, fileKey);
       }
       return await updateFolderAction(itemId, { name: formData.name })
     },
@@ -41,7 +41,7 @@ export default function RenameItemsForm(
 
   function onSubmit(data: z.infer<typeof createFolderSchema>) {
     mutation.mutate(data);
-      router.refresh();
+    router.refresh();
   }
 
 

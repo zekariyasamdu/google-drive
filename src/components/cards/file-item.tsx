@@ -14,7 +14,7 @@ import type { TFileSelect } from "~/lib/types/db";
 import { filesize } from "filesize";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { deleteFileAction } from "~/action/mutation-actions";
+import { deleteFileAction, updateFileAction } from "~/action/mutation-actions";
 import RenameDialog from "../dialogs/rename-items";
 import { useState } from "react";
 
@@ -22,8 +22,9 @@ export const FileItems = ({ data }: { data: TFileSelect[] }) => {
   const { currentCrumbId, setCurrentcrumbId } = useNavigateBreadcrumbs()
   const [isOpened, _toggleDialog] = useState(false)
   const route = useRouter()
+
   const deleteMutation = useMutation({
-    mutationKey: ["deleteFolder"],
+    mutationKey: ["deleteFile"],
     mutationFn: async ({
       file_id,
       file_key,
@@ -41,6 +42,27 @@ export const FileItems = ({ data }: { data: TFileSelect[] }) => {
     },
   })
 
+  const trashMutation = useMutation({
+    mutationKey: ["trashFile"],
+    mutationFn: async (fileid: number) => {
+      await updateFileAction(fileid, { trash: true })
+    },
+    onMutate: () => {
+      route.refresh()
+    }
+  })
+
+  const starMutation = useMutation({
+    mutationKey: ["starFile"],
+    mutationFn: async ({id, state}: {id: number, state: boolean}) => {
+      await updateFileAction(id, { star: state })
+    },
+    onMutate: () => {
+      route.refresh()
+     }
+  })
+
+
   const filteredData = () => {
     const filteredFile = data.filter((item) => item.parent === currentCrumbId);
     return filteredFile;
@@ -57,15 +79,26 @@ export const FileItems = ({ data }: { data: TFileSelect[] }) => {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="start">
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    Open
+                  {item.star?
+                  <DropdownMenuItem onClick={()=> starMutation.mutate({id: item.id, state: false})}>
+                    Unstar
                   </DropdownMenuItem>
+                    :
+                  <DropdownMenuItem onClick={()=> starMutation.mutate({id: item.id, state: true})}>
+                    Star
+                  </DropdownMenuItem>
+                  }
                   <DropdownMenuItem onClick={() => _toggleDialog(true)}>
                     Rename
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => deleteMutation.mutate({ file_id: item.id, file_key: item.fileKey })}>
-                    Remove
-                  </DropdownMenuItem>
+                  {item.trash ?
+                    <DropdownMenuItem onClick={() => deleteMutation.mutate({ file_id: item.id, file_key: item.fileKey })}>
+                      Remove
+                    </DropdownMenuItem> :
+                    <DropdownMenuItem onClick={() => trashMutation.mutate(item.id)}>
+                      Trash
+                    </DropdownMenuItem>
+                  }
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -2,11 +2,11 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { FileItems } from "~/components/cards/file-item";
 import { FolderItems } from "~/components/cards/folder-items";
-import { EmptyFolder } from "~/components/empty/empty-folder";
+import { EmptyTrash } from "~/components/empty/empty-trash";
 import { auth } from "~/server/auth/auth-server";
 import { QUERIES } from "~/server/db/queries";
 
-const Dashboard = async () => {
+const Trash = async () => {
   const session = await auth.api.getSession({
     headers: await headers()
   })
@@ -15,16 +15,16 @@ const Dashboard = async () => {
   }
   const userId = session.user.id;
   const [folders, files] = await Promise.all([QUERIES.getFolders(userId), QUERIES.getFiles(userId)]);
-  console.log(files.length, folders.length )
-  if (files.length === 0 && folders.length === 0) {
+  console.log(files.length, folders.length)
+
+  const filterTrashFolders = folders.filter(t => t.trash === true);
+  const filterTrashFiles = files.filter(t => t.trash === true);
+
+  if (filterTrashFolders.length === 0 && filterTrashFiles.length === 0) {
     return (
-      <EmptyFolder />
+      <EmptyTrash/>
     )
   }
-
-  const filterTrashFolders = folders.filter(t => t.trash === false); 
-  const filterTrashFiles = files.filter(t => t.trash === false); 
-
   return (
     <div className="mt-5 ml-auto flex w-full flex-row flex-wrap gap-10 pl-10">
       <FolderItems data={filterTrashFolders} />
@@ -32,4 +32,4 @@ const Dashboard = async () => {
     </div>
   );
 };
-export default Dashboard;
+export default Trash;
