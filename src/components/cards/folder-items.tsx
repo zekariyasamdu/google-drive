@@ -2,7 +2,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Folder, Ellipsis } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { deleteFolderAction } from "~/action/mutation-actions";
+import { deleteFolderAction, updateFolderAction } from "~/action/mutation-actions";
 import { Card, CardAction, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   DropdownMenu,
@@ -14,18 +14,29 @@ import {
 import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
 import type { TFolderSelect } from "~/lib/types/db";
 import RenameDialog from "../dialogs/rename-items";
-import {  useState } from "react";
+import { useState } from "react";
 
 export const FolderItems = ({ data }: { data: TFolderSelect[] }) => {
   const { setCurrentcrumbId, setBreadcrumbs, currentCrumbId } = useNavigateBreadcrumbs()
   const route = useRouter()
   const [isOpened, _toggleDialog] = useState(false)
+
   const deleteMutation = useMutation({
     mutationKey: ["deleteFolder"],
     mutationFn: async (folder_id: number) => {
       await deleteFolderAction(folder_id)
     },
-    onMutate: ()=>{
+    onMutate: () => {
+      route.refresh()
+    }
+  })
+
+  const trashMutation = useMutation({
+    mutationKey: ["deleteFolder"],
+    mutationFn: async (folder_id: number) => {
+      await updateFolderAction(folder_id, {trash:true})
+    },
+    onMutate: () => {
       route.refresh()
     }
   })
@@ -54,16 +65,21 @@ export const FolderItems = ({ data }: { data: TFolderSelect[] }) => {
                   <DropdownMenuItem>
                     Star
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={()=>_toggleDialog(true)}>
+                  <DropdownMenuItem onClick={() => _toggleDialog(true)}>
                     Rename
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => deleteMutation.mutate(item.id)}>
-                    Remove
-                  </DropdownMenuItem>
+                  {item.trash ?
+                    <DropdownMenuItem onClick={() => deleteMutation.mutate(item.id)}>
+                      Remove
+                    </DropdownMenuItem> :
+                    <DropdownMenuItem onClick={() => trashMutation.mutate(item.id)}>
+                      Trash
+                    </DropdownMenuItem>
+                  }
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
-            <RenameDialog variant="Folder" opened={isOpened} setIsOpen={_toggleDialog} itemId={item.id}/>
+            <RenameDialog variant="Folder" opened={isOpened} setIsOpen={_toggleDialog} itemId={item.id} />
           </CardAction>
           <CardHeader ><Folder className="w-11 h-11" /></CardHeader>
           <CardTitle className="pl-6">{item.name}</CardTitle>

@@ -47,7 +47,9 @@ export const ourFileRouter = {
         parent: metadata.parentId,
         url: file.ufsUrl,
         size: file.size.toString(),
-        fileKey: file.key
+        fileKey: file.key,
+        trash: false,
+        star: false
       }
       await MUTATION.createFile(fileData)
 

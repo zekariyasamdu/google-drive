@@ -10,27 +10,27 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@radix-ui/r
 const items = [
   {
     title: "My Drive",
-    url: "/dashboard/my-drive",
+    url: "/dashboard",
     icon: Home,
   },
   {
     title: "Profile",
-    url: "/dashboard/profile",
+    url: "/profile",
     icon: User,
   },
   {
     title: "Starred",
-    url: "/dashboard/starred",
+    url: "/starred",
     icon: Star,
   },
   {
     title: "Recent",
-    url: "/dashboard/recent",
+    url: "/recent",
     icon: Clock,
   },
   {
     title: "Trash",
-    url: "/dashboard/trash",
+    url: "/trash",
     icon: Trash,
   },
 ]

@@ -39,6 +39,8 @@ export default function CreateFolderForm() {
         name: formData.name,
         owner_id: userInfo.data.data.user.id,
         parent: currentCrumbId,
+        star: false,
+        trash: false
       };
 
       return await createFolderAction(folderData);
