@@ -13,6 +13,9 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { useRouter } from "next/navigation";
+import { authClient } from "~/lib/auth/auth-client";
+import { useMutation } from "@tanstack/react-query";
+
 const SignupSchema = z
   .object({
     username: z
@@ -30,20 +33,34 @@ const SignupSchema = z
     path: ["reEnterPassword"],
     message: "Password do not match",
   });
+
 export default function SignupForm() {
   const router = useRouter();
   const form = useForm<z.infer<typeof SignupSchema>>({
     resolver: zodResolver(SignupSchema),
   });
 
+
+  const signupEmailAndPassword = useMutation({
+    mutationKey: ["signup"],
+    mutationFn: async (formData: z.infer<typeof SignupSchema>) => {
+      const { data, error } = await authClient.signUp.email({
+        email: formData.email, 
+        password: formData.password,  
+        name: formData.username, 
+        callbackURL: "/dashboard" 
+      });
+      console.log(error)
+      return data;
+    },
+  })
+
   const onSubmit: SubmitHandler<z.infer<typeof SignupSchema>> = async (
     data
   ) => {
-    await new Promise((res) => {
-      setTimeout(res, 4000);
-    });
-    console.log(data);
+    signupEmailAndPassword.mutate(data);
   };
+
   const navToLogin = () => {
     router.push("/auth/login");
   };
