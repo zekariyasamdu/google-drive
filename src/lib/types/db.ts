@@ -7,7 +7,8 @@ export type TFolderSelect = InferSelectModel<typeof foldersSchema>;
 export type TFileInsert = InferInsertModel<typeof filesSchema>;
 export type TFolderInsert = InferInsertModel<typeof foldersSchema>;
 
-
-
-
+// File Guard
+export function isFile(item: TFolderSelect | TFileSelect): item is TFileSelect {
+  return "url" in item;
+}
 
