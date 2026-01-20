@@ -1,4 +1,4 @@
 export const sendEmail = () => {
-
+  return;
 }
 
