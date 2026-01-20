@@ -5,6 +5,10 @@ import { db } from "~/server/db";
 import { user, session, account, verification } from "../db/schema";
 import { nextCookies } from "better-auth/next-js";
 
+const sendEmail = () => {
+  return;
+}
+
 export const auth = betterAuth({
   plugins: [nextCookies()],
   database: drizzleAdapter(db, {
@@ -18,6 +22,14 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    autoSignIn: true
+  },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      void sendEmail();
+    },
+    sendOnSignUp: true,
+    requireEmailVerification: false,
   },
   socialProviders: {
     google: {

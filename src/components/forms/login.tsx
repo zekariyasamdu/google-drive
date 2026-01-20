@@ -14,11 +14,12 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { useRouter } from "next/navigation";
 import { signIn } from "~/lib/auth/auth-client";
 import { useMutation } from "@tanstack/react-query";
+import { authClient } from "~/lib/auth/auth-client";
 
 const LoginSchema = z.object({
-  username: z
+  email: z
     .string()
-    .min(4, "Username field has to have more than 4 characters"),
+    .email(),
   password: z
     .string()
     .min(8, "Password field needs to have more than 5 charachters"),
@@ -30,22 +31,31 @@ function LoginForm() {
     resolver: zodResolver(LoginSchema),
   });
 
-  const signupMutaion = useMutation({
-    mutationKey: ["signup"],
-    mutationFn: () => handelSignin(),
+  const signupGoogleMutaion = useMutation({
+    mutationKey: ["loginGoogle"],
+    mutationFn: async () => {
+      const res = await signIn();
+      console.log(res.data);
+    },
   });
 
+  const signupEmailAndPassword = useMutation({
+    mutationKey: ["loginGoogle"],
+    mutationFn: async (formData: z.infer<typeof LoginSchema>) => {
+      const { data } = await authClient.signIn.email({
+        email: formData.email,
+        password: formData.password,
+        callbackURL: "/dashboard",
+        rememberMe: true
+      },)
+      return data;
+    },
+  })
+
   const onSubmit: SubmitHandler<z.infer<typeof LoginSchema>> = async (data) => {
-    await new Promise((res) => {
-      setTimeout(res, 4000);
-    });
-    console.log(data);
+    signupEmailAndPassword.mutate(data);
   };
 
-  const handelSignin = async () => {
-    const res = await signIn();
-    console.log(res.data);
-  };
 
   const navToSignup = () => {
     router.push("/auth/signup");
@@ -57,15 +67,15 @@ function LoginForm() {
         <form id="form-login" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
             <Controller
-              name="username"
+              name="email"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel>username</FieldLabel>
+                  <FieldLabel>email</FieldLabel>
                   <Input
                     {...field}
                     autoComplete="off"
-                    placeholder="zekariyas_amd"
+                    placeholder="example@gmail.com"
                     required
                     aria-invalid={fieldState.invalid}
                   />
@@ -127,8 +137,8 @@ function LoginForm() {
             <div className="grow border-t border-border"></div>
           </div>
 
-          <Button variant={"ghost"}  onClick={() => signupMutaion.mutate()}>
-             Continue with Google
+          <Button variant={"ghost"} onClick={() => signupGoogleMutaion.mutate()}>
+            Continue with Google
           </Button>
         </CardAction>
       </CardFooter>

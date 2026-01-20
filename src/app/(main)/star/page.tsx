@@ -1,7 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { FileItems } from "~/components/cards/file-item";
-import { FolderItems } from "~/components/cards/folder-items";
+import { ContentItemsCard } from "~/components/cards/content-items";
 import { EmptyStar } from "~/components/empty/empty-star";
 import { auth } from "~/server/auth/auth-server";
 import { QUERIES } from "~/server/db/queries";
@@ -27,8 +26,8 @@ const Star = async () => {
   }
   return (
     <div className="mt-5 ml-auto flex w-full flex-row flex-wrap gap-10 pl-10">
-      <FolderItems data={filterStarFolders} />
-      <FileItems data={filterStarFiles} />
+      <ContentItemsCard data={filterStarFolders} />
+      <ContentItemsCard data={filterStarFiles} />
     </div>
   );
 };
