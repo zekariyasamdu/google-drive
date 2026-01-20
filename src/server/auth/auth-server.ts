@@ -6,7 +6,7 @@ import { user, session, account, verification } from "../db/schema";
 import { nextCookies } from "better-auth/next-js";
 
 const sendEmail = () => {
-
+  return;
 }
 
 export const auth = betterAuth({
@@ -26,11 +26,7 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      void sendEmail({
-        //   to: user.email,
-        //   subject: "Verify your email address",
-        //   text: `Click the link to verify your email: ${url}`,
-      });
+      void sendEmail();
     },
     sendOnSignUp: true,
     requireEmailVerification: false,
