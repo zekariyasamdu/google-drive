@@ -17,8 +17,12 @@ const Dashboard = async () => {
     QUERIES.getFolders(userId),
     QUERIES.getFiles(userId),
   ]);
-  console.log(files.length, folders.length);
-  if (files.length === 0 && folders.length === 0) {
+
+  const foldersWithNullParents = folders.filter(item => (item.parent === null && item.trash === false))
+  const filesWithNullParents = files.filter(item => item.parent === null && item.trash === false)
+  console.log(foldersWithNullParents.length, filesWithNullParents.length);
+
+  if (filesWithNullParents.length === 0 && foldersWithNullParents.length === 0) {
     return <EmptyFolder />;
   }
 

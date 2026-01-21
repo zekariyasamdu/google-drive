@@ -8,7 +8,7 @@ import {
 } from "../ui/card";
 import { useMutation } from "@tanstack/react-query";
 import { Ellipsis, Folder, File } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   deleteFileAction,
@@ -39,7 +39,7 @@ export const ContentItemsCard = ({
     useNavigateBreadcrumbs();
   const route = useRouter();
   const [isOpened, _toggleDialog] = useState(false);
-
+  const currentPath = usePathname();
   const deleteMutation = useMutation({
     mutationKey: ["deleteItem"],
     mutationFn: async ({
@@ -112,13 +112,27 @@ export const ContentItemsCard = ({
   }
 
   const filteredData = () => {
-    const filteredItems = data.filter((item) => item.parent === currentCrumbId);
+
+    let filteredItems;
+
+    if (currentPath === "/trash" && currentCrumbId === null) {
+      filteredItems = data.filter((item) => item.trash === true);
+      return filteredItems;
+    }
+
+    if (currentPath === "/star" && currentCrumbId === null) {
+      filteredItems = data.filter((item) => (item.star === true));
+      return filteredItems;
+    }
+
+    filteredItems = data.filter((item) => (item.parent === currentCrumbId));
     return filteredItems;
+
   };
 
   return (
     <>
-      {filteredData().map((item) => (
+      {filteredData()?.map((item) => (
         <Card key={item.id} className="relative h-45 w-1/6 gap-2">
           <CardAction className="absolute top-2 right-2">
             <DropdownMenu>
@@ -189,7 +203,7 @@ export const ContentItemsCard = ({
                             });
                           }}
                         >
-                          Remove
+                          Delete forever
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
@@ -209,7 +223,7 @@ export const ContentItemsCard = ({
                             });
                           }}
                         >
-                          Untrash
+                          Recover
                         </DropdownMenuItem>
                       </>
                     ) : (

@@ -79,7 +79,8 @@ export async function updateFileAction(
  */
 export async function updateFolderAction(
   folderId: number,
-  updateData: Partial<TFolderInsert> = {}
+  updateData: Partial<TFolderInsert>
 ) {
   return MUTATION.updateFolder(folderId, updateData);
 }
+
