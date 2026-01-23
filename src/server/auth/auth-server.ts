@@ -4,11 +4,10 @@ import { env } from "~/env";
 import { db } from "~/server/db";
 import { user, session, account, verification } from "../db/schema";
 import { nextCookies } from "better-auth/next-js";
+import { Resend } from 'resend';
+import { VerifyEmail } from "./VerifyEmail";
 
-const sendEmail = () => {
-  return;
-}
-
+const resend = new Resend(env.RESEND_API_KEY);
 export const auth = betterAuth({
   plugins: [nextCookies()],
   database: drizzleAdapter(db, {
@@ -22,14 +21,23 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
     autoSignIn: true
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      void sendEmail();
+      const fromEmail = env.NODE_ENV === 'production' ? "delivered@resend.dev" : "delivered@resend.dev"; 
+      void resend.emails.send({
+        from: fromEmail,
+        to: user.email,
+        subject: "Verify your email",
+        react: VerifyEmail({ username: user.name, verifyUrl: url })
+      })
     },
+    autoSignInAfterVerification: true,
     sendOnSignUp: true,
-    requireEmailVerification: false,
+    requireEmailVerification: true,
+    callbackUrl:""
   },
   socialProviders: {
     google: {
