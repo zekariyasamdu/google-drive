@@ -2,9 +2,9 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import UploadZone from "~/components/button/dropzone";
 import { Button } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { auth } from "~/server/auth/auth-server";
+import Image from "next/image";
 
 const Profile = async () => {
   const session = await auth.api.getSession({
@@ -13,7 +13,9 @@ const Profile = async () => {
   if (!session) {
     redirect("/auth/login");
   }
-  const userId = session.user.id;
+
+  const profilePicture = session.user.image;
+  console.log(profilePicture);
 
   return (
     <div className="bg-background ml-12 flex h-fit w-full flex-col justify-center gap-6 p-4">
@@ -21,9 +23,17 @@ const Profile = async () => {
         <h2 className="text-foreground mb-4 text-xl">Profile Information</h2>
         <div className="border-border grow border-t"></div>
         <div className="space-y-4 pt-3">
+          <label className="text-foreground mb-2 block text-sm font-medium">
+            Profile Picture
+          </label>
           <div className="flex gap-6">
-            <Card className="h-56 w-1/2"></Card>
-            <UploadZone/>
+            <Image
+              width={200}
+              height={100}
+              src={profilePicture ?? "/images/no-pfp.jpg"}
+              alt="profile picture"
+            />
+            <UploadZone />
           </div>
           <div>
             <label className="text-foreground mb-2 block text-sm font-medium">
