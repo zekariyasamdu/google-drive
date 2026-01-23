@@ -15,6 +15,8 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { useRouter } from "next/navigation";
 import { authClient } from "~/lib/auth/auth-client";
 import { useMutation } from "@tanstack/react-query";
+import { error } from "console";
+import { toast } from "sonner";
 
 const SignupSchema = z
   .object({
@@ -38,29 +40,36 @@ export default function SignupForm() {
   const router = useRouter();
   const form = useForm<z.infer<typeof SignupSchema>>({
     resolver: zodResolver(SignupSchema),
+    defaultValues: {
+      email: "",
+      username: "",
+      password: "",
+      reEnterPassword: ""
+    }
   });
-
-
   const signupEmailAndPassword = useMutation({
     mutationKey: ["signup"],
     mutationFn: async (formData: z.infer<typeof SignupSchema>) => {
       const { data, error } = await authClient.signUp.email({
-        email: formData.email, 
-        password: formData.password,  
-        name: formData.username, 
-        callbackURL: "/dashboard" 
+        email: formData.email,
+        password: formData.password,
+        name: formData.username,
+        callbackURL: "/dashboard",
       });
-      console.log(error)
+      if (error) {
+        throw new Error(error.message);
+      }
+
       return data;
     },
-  })
-
-  const onSubmit: SubmitHandler<z.infer<typeof SignupSchema>> = async (
-    data
-  ) => {
-    signupEmailAndPassword.mutate(data);
-  };
-
+    onSuccess: () => {
+      toast.success("We have sent an email, verify your account!")
+    },
+    onError: (e) => {
+      toast.error(e.message)
+    },
+  });
+  console.log(signupEmailAndPassword.isPending)
   const navToLogin = () => {
     router.push("/auth/login");
   };
@@ -71,7 +80,7 @@ export default function SignupForm() {
       <CardHeader className="relative">
       </CardHeader>
       <CardContent>
-        <form id="form-login" onSubmit={form.handleSubmit(onSubmit)}>
+        <form id="form-login" onSubmit={form.handleSubmit(data => signupEmailAndPassword.mutate(data))}>
           <FieldGroup>
             <Controller
               name="username"
@@ -162,7 +171,7 @@ export default function SignupForm() {
         <CardAction className="w-full flex flex-col gap-4">
           <Button
             form="form-login"
-            disabled={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting || signupEmailAndPassword.isPending}
             className="w-full"
           >
             Create Account
@@ -170,7 +179,7 @@ export default function SignupForm() {
           <Button
             variant={"outline"}
             id="form-login"
-            disabled={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting || signupEmailAndPassword.isPending}
             className="w-full hover:text-primary"
             onClick={() => navToLogin()}
           >

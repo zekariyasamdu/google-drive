@@ -13,11 +13,9 @@ const Profile = async () => {
   if (!session) {
     redirect("/auth/login");
   }
-
+// credential / google
   const profilePicture = session.user.image;
-  console.log(profilePicture);
-
-  return (
+    return (
     <div className="bg-background ml-12 flex h-fit w-full flex-col justify-center gap-6 p-4">
       <section className="flex h-fit w-3/5 flex-col">
         <h2 className="text-foreground mb-4 text-xl">Profile Information</h2>
