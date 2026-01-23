@@ -16,7 +16,7 @@ const Star = async () => {
   const [folders, files] = await Promise.all([QUERIES.getFolders(userId), QUERIES.getFiles(userId)]);
   console.log(files.length, folders.length)
 
-  const filterStarFolders = folders.filter(t => t.star === true);
+  const filterStarFolders = folders.filter((t) => t.star === true);
   const filterStarFiles = files.filter(t => t.star === true);
 
   if (filterStarFolders.length === 0 && filterStarFiles.length === 0) {
@@ -26,8 +26,8 @@ const Star = async () => {
   }
   return (
     <div className="mt-5 ml-auto flex w-full flex-row flex-wrap gap-10 pl-10">
-      <ContentItemsCard data={filterStarFolders} />
-      <ContentItemsCard data={filterStarFiles} />
+      <ContentItemsCard data={folders} />
+      <ContentItemsCard data={files} />
     </div>
   );
 };

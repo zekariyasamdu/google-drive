@@ -20,19 +20,19 @@ export const MUTATION = {
   createFolder: (folder: TFolderInsert) => {
     return db.insert(foldersSchema).values(folder);
   },
-  deleteFolder: (folder_id: number) => {
-    return db.delete(foldersSchema).where(eq(foldersSchema.id, folder_id));
+  deleteFolder: (folderId: number) => {
+    return db.delete(foldersSchema).where(eq(foldersSchema.id, folderId));
   },
-  updateFolder: (file_id: number, updateData: Partial<TFolderInsert>={}) => {
-    return db.update(foldersSchema).set({...updateData}).where(eq(foldersSchema.id, file_id));
+  updateFolder: (fileId: number, updateData: Partial<TFolderInsert> = {}) => {
+    return db.update(foldersSchema).set({ ...updateData }).where(eq(foldersSchema.id, fileId));
   },
   createFile: (files: TFileInsert) => {
     return db.insert(filesSchema).values(files);
   },
-  deleteFiles: (file_id: number) => {
-    return db.delete(filesSchema).where(eq(filesSchema.id, file_id));
+  deleteFiles: (fileId: number) => {
+    return db.delete(filesSchema).where(eq(filesSchema.id, fileId));
   },
-  updateFile: (file_id: number, updateData: Partial<TFileInsert>={}) => {
-    return db.update(filesSchema).set({...updateData}).where(eq(filesSchema.id, file_id));
+  updateFile: (fileId: number, updateData: Partial<TFileInsert> = {}) => {
+    return db.update(filesSchema).set({ ...updateData }).where(eq(filesSchema.id, fileId));
   },
 }
