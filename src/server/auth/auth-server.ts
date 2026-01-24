@@ -4,12 +4,30 @@ import { env } from "~/env";
 import { db } from "~/server/db";
 import { user, session, account, verification } from "../db/schema";
 import { nextCookies } from "better-auth/next-js";
-import { Resend } from 'resend';
-import { VerifyEmail } from "./VerifyEmail";
+import { Resend } from "resend";
+import { VerifyEmail } from "./components/VerifyEmail";
+import { DeleteAccountEmail } from "./components/DeleteAccountEmail";
 
 const resend = new Resend(env.RESEND_API_KEY);
 export const auth = betterAuth({
   plugins: [nextCookies()],
+  user: {
+    deleteUser: {
+      enabled: true,
+      sendDeleteAccountVerification: async ({ user, url, token }, request) => {
+        const fromEmail =
+          env.NODE_ENV === "production"
+            ? "delivered@resend.dev"
+            : "delivered@resend.dev";
+        void resend.emails.send({
+          from: fromEmail,
+          to: user.email,
+          subject: "Delete your account",
+          react: DeleteAccountEmail({ verifyUrl: url }),
+        });
+      },
+    },
+  },
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -22,22 +40,25 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-    autoSignIn: true
+    autoSignIn: true,
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      const fromEmail = env.NODE_ENV === 'production' ? "delivered@resend.dev" : "delivered@resend.dev"; 
+      const fromEmail =
+        env.NODE_ENV === "production"
+          ? "delivered@resend.dev"
+          : "delivered@resend.dev";
       void resend.emails.send({
         from: fromEmail,
         to: user.email,
         subject: "Verify your email",
-        react: VerifyEmail({ username: user.name, verifyUrl: url })
-      })
+        react: VerifyEmail({ username: user.name, verifyUrl: url }),
+      });
     },
     autoSignInAfterVerification: true,
     sendOnSignUp: true,
     requireEmailVerification: true,
-    callbackUrl:""
+    callbackUrl: "",
   },
   socialProviders: {
     google: {
