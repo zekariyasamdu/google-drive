@@ -5,6 +5,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { auth } from "~/server/auth/auth-server";
 import Image from "next/image";
+import DeleteAccountDialog from "~/components/dialogs/delete-account";
 
 const Profile = async () => {
   const session = await auth.api.getSession({
@@ -13,7 +14,7 @@ const Profile = async () => {
   if (!session) {
     redirect("/auth/login");
   }
-// credential / google
+  
   const profilePicture = session.user.image;
     return (
     <div className="bg-background ml-12 flex h-fit w-full flex-col justify-center gap-6 p-4">
@@ -113,7 +114,7 @@ const Profile = async () => {
               action cannot be undone.
             </div>
           </div>
-          <Button className="bg-destructive">Delete</Button>
+          <DeleteAccountDialog/>
         </div>
       </section>
     </div>
