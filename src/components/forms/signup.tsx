@@ -1,9 +1,8 @@
 "use client"
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Controller, useForm, type SubmitHandler } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
-  Card,
   CardAction,
   CardContent,
   CardFooter,
@@ -15,7 +14,6 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { useRouter } from "next/navigation";
 import { authClient } from "~/lib/auth/auth-client";
 import { useMutation } from "@tanstack/react-query";
-import { error } from "console";
 import { toast } from "sonner";
 
 const SignupSchema = z

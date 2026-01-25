@@ -1,9 +1,10 @@
 import "server-only"
-import type { TFileInsert, TFolderInsert } from "~/lib/types/db";
+import type { TFileInsert, TFolderInsert, TUserInsert } from "~/lib/types/db";
 import { db } from ".";
 import {
   filesSchema,
   foldersSchema,
+  user,
 } from "~/server/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -35,4 +36,7 @@ export const MUTATION = {
   updateFile: (fileId: number, updateData: Partial<TFileInsert> = {}) => {
     return db.update(filesSchema).set({ ...updateData }).where(eq(filesSchema.id, fileId));
   },
+  updateUser: (userId: string, updateData: Partial<TUserInsert> = {}) => {
+    return db.update(user).set({ ...updateData }).where(eq(user.id, userId));
+  }
 }
