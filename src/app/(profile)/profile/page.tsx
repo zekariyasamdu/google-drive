@@ -6,6 +6,7 @@ import { Input } from "~/components/ui/input";
 import { auth } from "~/server/auth/auth-server";
 import Image from "next/image";
 import DeleteAccountDialog from "~/components/dialogs/delete-account";
+import RenameUsernameForm from "~/components/forms/rename-account";
 
 const Profile = async () => {
   const session = await auth.api.getSession({
@@ -16,6 +17,7 @@ const Profile = async () => {
   }
   
   const profilePicture = session.user.image;
+  const name = session.user.name;
     return (
     <div className="bg-background ml-12 flex h-fit w-full flex-col justify-center gap-6 p-4">
       <section className="flex h-fit w-3/5 flex-col">
@@ -34,15 +36,8 @@ const Profile = async () => {
             />
             <UploadZone />
           </div>
-          <div>
-            <label className="text-foreground mb-2 block text-sm font-medium">
-              Full Name
-            </label>
-            <div className="flex gap-6">
-              <Input type="text" placeholder="Enter your full name" />
-              <Button>Rename</Button>
-            </div>
-          </div>
+
+          <RenameUsernameForm initailName={name}/>
 
           <div>
             <label className="text-foreground mb-2 block text-sm font-medium">
@@ -50,6 +45,7 @@ const Profile = async () => {
             </label>
             <Input
               type="email"
+              value={session.user.email}
               disabled
               className="bg-background border-border cursor-not-allowed opacity-50"
             />

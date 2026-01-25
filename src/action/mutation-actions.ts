@@ -1,7 +1,9 @@
 "use server";
 import { MUTATION } from "~/server/db/queries";
-import type { TFileInsert, TFolderInsert } from "~/lib/types/db";
+import type { TFileInsert, TFolderInsert, TUserInsert } from "~/lib/types/db";
 import { utapi } from "~/server/uploadthings";
+import { headers } from "next/headers";
+import { auth } from "~/server/auth/auth-server";
 
 /**
  * Creates a new folder record in the database.
@@ -82,5 +84,28 @@ export async function updateFolderAction(
   updateData: Partial<TFolderInsert>
 ) {
   return MUTATION.updateFolder(folderId, updateData);
+}
+
+
+/**
+ * Updates a user's metadata in the database.
+ *
+ * @param userId - The unique ID of the user to update.
+ * @param updateData - Partial user data to update (e.g. name).
+ *
+ * @returns A promise that resolves when the user is updated.
+ */
+export async function updateUserAction(
+  updateData: Partial<TUserInsert>
+) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  console.log(session)
+  if (!session) {
+    return
+  }
+  await MUTATION.updateUser(session.user.id, updateData);
+  return
 }
 
