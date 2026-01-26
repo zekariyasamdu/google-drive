@@ -17,7 +17,7 @@ const RenameSchema = z
       .min(4, "Username field has to have more than 4 characters"),
   });
 
-export default function RenameUsernameForm({initailName}: {initailName:string}) {
+export default function RenameUsernameForm({ initailName }: { initailName: string }) {
   const route = useRouter()
   const form = useForm<z.infer<typeof RenameSchema>>({
     resolver: zodResolver(RenameSchema),
@@ -42,7 +42,7 @@ export default function RenameUsernameForm({initailName}: {initailName:string}) 
   return (
 
     <div>
-      <form className="flex gap-6 items-center " id="form-rename-name" onSubmit={form.handleSubmit(data => changeNameMutation.mutate(data))}>
+      <form  id="form-rename-name" onSubmit={form.handleSubmit(data => changeNameMutation.mutate(data))}>
         <FieldGroup>
           <Controller
             name="name"
@@ -50,26 +50,30 @@ export default function RenameUsernameForm({initailName}: {initailName:string}) 
             render={({ field, fieldState }) => (
               <Field>
                 <FieldLabel>Full Name</FieldLabel>
-                <Input
-                  {...field}
-                  autoComplete="off"
-                  placeholder="Enter your full name"
-                  required
-                  aria-invalid={fieldState.invalid}
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+                <div className="flex gap-6 items-center ">
+                  <Input
+                    {...field}
+                    autoComplete="off"
+                    placeholder="Enter your full name"
+                    required
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+
+                  <Button
+                    form="form-rename-name"
+                    disabled={form.formState.isSubmitting || changeNameMutation.isPending}
+                  >
+                    Rename
+                  </Button>
+
+                </div>
               </Field>
             )}
           />
         </FieldGroup>
-        <Button
-          form="form-rename-name"
-          disabled={form.formState.isSubmitting || changeNameMutation.isPending}
-        >
-          Rename
-        </Button>
       </form>
 
     </div>

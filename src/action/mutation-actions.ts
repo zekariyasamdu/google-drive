@@ -98,13 +98,14 @@ export async function updateFolderAction(
 export async function updateUserAction(
   updateData: Partial<TUserInsert>
 ) {
-const session = await auth.api.getSession({
+  const session = await auth.api.getSession({
     headers: await headers(),
   });
   console.log(session)
   if (!session) {
     return
   }
-  return  MUTATION.updateUser(session.user.name, updateData);
+  await MUTATION.updateUser(session.user.id, updateData);
+  return
 }
 
