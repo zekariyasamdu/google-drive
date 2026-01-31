@@ -1,12 +1,12 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import UploadZone from "~/components/button/dropzone";
-import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { auth } from "~/server/auth/auth-server";
 import Image from "next/image";
 import DeleteAccountDialog from "~/components/dialogs/delete-account";
 import RenameUsernameForm from "~/components/forms/rename-account";
+import ChangePassword from "~/components/forms/change-password";
 
 const Profile = async () => {
   const session = await auth.api.getSession({
@@ -15,10 +15,10 @@ const Profile = async () => {
   if (!session) {
     redirect("/auth/login");
   }
-  
+
   const profilePicture = session.user.image;
   const name = session.user.name;
-    return (
+  return (
     <div className="bg-background ml-12 flex h-fit w-full flex-col justify-center gap-6 p-4">
       <section className="flex h-fit w-3/5 flex-col">
         <h2 className="text-foreground mb-4 text-xl">Profile Information</h2>
@@ -37,7 +37,7 @@ const Profile = async () => {
             <UploadZone />
           </div>
 
-          <RenameUsernameForm initailName={name}/>
+          <RenameUsernameForm initailName={name} />
 
           <div>
             <label className="text-foreground mb-2 block text-sm font-medium">
@@ -57,46 +57,7 @@ const Profile = async () => {
       </section>
 
       <section className="flex h-fit w-3/5 flex-col">
-        <h2 className="text-foreground mb-4 text-lg">Change Password</h2>
-        <div className="border-border grow border-t"></div>
-        <div className="space-y-4 pt-3">
-          <div>
-            <label className="text-foreground mb-2 block text-sm font-medium">
-              Current Password
-            </label>
-            <Input
-              type="password"
-              placeholder="Enter current password"
-              className="bg-background border-border"
-            />
-          </div>
-
-          <div>
-            <label className="text-foreground mb-2 block text-sm font-medium">
-              New Password
-            </label>
-            <Input
-              type="password"
-              placeholder="Enter new password (min 8 characters)"
-              className="bg-background border-border"
-            />
-          </div>
-
-          <div>
-            <label className="text-foreground mb-2 block text-sm font-medium">
-              Confirm New Password
-            </label>
-            <Input
-              type="password"
-              placeholder="Confirm new password"
-              className="bg-background border-border"
-            />
-          </div>
-
-          <Button className="bg-primary hover:bg-primary/90 w-full">
-            Change Password
-          </Button>
-        </div>
+        <ChangePassword />
       </section>
 
       <section className="flex h-fit w-3/5 flex-col">
@@ -110,7 +71,7 @@ const Profile = async () => {
               action cannot be undone.
             </div>
           </div>
-          <DeleteAccountDialog/>
+          <DeleteAccountDialog />
         </div>
       </section>
     </div>
