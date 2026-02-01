@@ -34,7 +34,7 @@ const Profile = async () => {
               src={profilePicture ?? "/images/no-pfp.jpg"}
               alt="profile picture"
             />
-            <UploadZone />
+            <UploadZone isProfilePicture={true} />
           </div>
 
           <RenameUsernameForm initailName={name} />

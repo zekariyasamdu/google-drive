@@ -21,7 +21,8 @@ export const ourFileRouter = {
     },
   })
     .input(z.object({
-      currentCrumbId: z.number().nullable()
+      currentCrumbId: z.number().nullable(),
+      isProfilePicture: z.boolean().nullable(),
     }))
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req, input }) => {
@@ -37,10 +38,15 @@ export const ourFileRouter = {
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
       const userId = session.user.id;
       const parentId = input?.currentCrumbId
-      return { userId, parentId };
+      const isProfilePicture = input.isProfilePicture;
+      return { userId, parentId, isProfilePicture };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
+      if (metadata.isProfilePicture === true) {
+        await MUTATION.updateUser(metadata.userId, { image: file.ufsUrl });
+        return;
+      }
       const fileData = {
         owner_id: String(metadata.userId),
         name: file.name,
