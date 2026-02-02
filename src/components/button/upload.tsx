@@ -20,6 +20,7 @@ export default function UploadBtn({
       endpoint="imageUploader"
       input={{
         currentCrumbId,
+        isProfilePicture: null
       }}
       onClientUploadComplete={(res) => {
         // Do something with the response

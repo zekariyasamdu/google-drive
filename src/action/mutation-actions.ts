@@ -3,7 +3,7 @@ import { MUTATION } from "~/server/db/queries";
 import type { TFileInsert, TFolderInsert, TUserInsert } from "~/lib/types/db";
 import { utapi } from "~/server/uploadthings";
 import { headers } from "next/headers";
-import { auth } from "~/server/auth/auth-server";
+import { auth } from "~/server/auth/auth";
 
 /**
  * Creates a new folder record in the database.
@@ -108,4 +108,19 @@ export async function updateUserAction(
   await MUTATION.updateUser(session.user.id, updateData);
   return
 }
+export async function deleteProfilePicture() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    return
+  }
+  const userId = session.user.id;
+  const imageFileKey = session.user.imageFileKey;
+  const promise = []
 
+  if (imageFileKey) {
+    promise.push(utapi.deleteFiles(imageFileKey))
+  }
+  await Promise.all([MUTATION.updateUser(userId, { image: null, imageFileKey: null }), ...promise])
+}

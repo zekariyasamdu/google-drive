@@ -1,12 +1,13 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import UploadZone from "~/components/button/dropzone";
 import { Input } from "~/components/ui/input";
-import { auth } from "~/server/auth/auth-server";
+import { auth } from "~/server/auth/auth";
 import Image from "next/image";
 import DeleteAccountDialog from "~/components/dialogs/delete-account";
 import RenameUsernameForm from "~/components/forms/rename-account";
 import ChangePassword from "~/components/forms/change-password";
+import ChangeProfilePictureDialog from "~/components/dialogs/change-profile-picture";
+import DeleteImageDialog from "~/components/dialogs/delete-profile-picture";
 
 const Profile = async () => {
   const session = await auth.api.getSession({
@@ -34,11 +35,11 @@ const Profile = async () => {
               src={profilePicture ?? "/images/no-pfp.jpg"}
               alt="profile picture"
             />
-            <UploadZone />
+            <ChangeProfilePictureDialog />
+            <DeleteImageDialog/>
           </div>
 
           <RenameUsernameForm initailName={name} />
-
           <div>
             <label className="text-foreground mb-2 block text-sm font-medium">
               Email Address

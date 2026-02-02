@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { ContentItemsCard } from "~/components/cards/content-items";
 import { EmptyFolder } from "~/components/empty/empty-folder";
-import { auth } from "~/server/auth/auth-server";
+import { auth } from "~/server/auth/auth";
 import { QUERIES } from "~/server/db/queries";
 
 const Dashboard = async () => {
