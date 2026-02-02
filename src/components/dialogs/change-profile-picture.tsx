@@ -1,5 +1,4 @@
 "use client"
-import { File } from "lucide-react";
 import UploadZone from "../button/dropzone";
 import { Button } from "../ui/button";
 import {
