@@ -1,6 +1,6 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { auth } from "~/server/auth/auth-server";
+import { auth } from "~/server/auth/auth";
 import { MUTATION } from "~/server/db/queries";
 import { headers } from "next/headers";
 import z from "zod";
@@ -44,7 +44,7 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
       if (metadata.isProfilePicture === true) {
-        await MUTATION.updateUser(metadata.userId, { image: file.ufsUrl });
+        await MUTATION.updateUser(metadata.userId, { image: file.ufsUrl, imageFileKey: file.key });
         return;
       }
       const fileData = {

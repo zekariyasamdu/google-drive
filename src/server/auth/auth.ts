@@ -1,17 +1,23 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { env } from "~/env";
-import { db } from "~/server/db";
 import { user, session, account, verification } from "../db/schema";
 import { nextCookies } from "better-auth/next-js";
 import { Resend } from "resend";
 import { VerifyEmail } from "./components/VerifyEmail";
 import { DeleteAccountEmail } from "./components/DeleteAccountEmail";
+import { db } from "../db";
+import { env } from "~/env";
 
 const resend = new Resend(env.RESEND_API_KEY);
 export const auth = betterAuth({
   plugins: [nextCookies()],
   user: {
+    additionalFields:{
+			imageFileKey: {
+				type: "string",
+				required: false,
+			},
+    },
     deleteUser: {
       enabled: true,
       sendDeleteAccountVerification: async ({ user, url, token }, request) => {
