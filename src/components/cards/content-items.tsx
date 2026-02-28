@@ -15,7 +15,7 @@ import {
   deleteFolderAction,
   updateFileAction,
   updateFolderAction,
-} from "~/action/mutation-actions";
+} from "~/server/actions/mutation-actions";
 import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
 import { type TFolderSelect, type TFileSelect, isFile } from "~/lib/types/db";
 import RenameDialog from "../dialogs/rename-items";
@@ -75,7 +75,6 @@ export const ContentItemsCard = ({
         await updateFileAction(itemId, { trash: state });
         return;
       }
-
       await updateFolderAction(itemId, { trash: state });
     },
     onMutate: () => {
@@ -112,7 +111,6 @@ export const ContentItemsCard = ({
   }
 
   const filteredData = () => {
-
     let filteredItems;
 
     if (currentPath === "/trash" && currentCrumbId === null) {
@@ -121,13 +119,12 @@ export const ContentItemsCard = ({
     }
 
     if (currentPath === "/star" && currentCrumbId === null) {
-      filteredItems = data.filter((item) => (item.star === true));
+      filteredItems = data.filter((item) => item.star === true);
       return filteredItems;
     }
 
-    filteredItems = data.filter((item) => (item.parent === currentCrumbId));
+    filteredItems = data.filter((item) => item.parent === currentCrumbId);
     return filteredItems;
-
   };
 
   return (

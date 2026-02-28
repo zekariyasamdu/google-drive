@@ -2,12 +2,7 @@
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardFooter,
-} from "../ui/card";
+import { CardAction, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
@@ -15,11 +10,11 @@ import { useRouter } from "next/navigation";
 import { signIn } from "~/lib/auth/auth-client";
 import { useMutation } from "@tanstack/react-query";
 import { authClient } from "~/lib/auth/auth-client";
+import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
 const LoginSchema = z.object({
-  email: z
-    .string()
-    .email(),
+  email: z.string().email(),
   password: z
     .string()
     .min(8, "Password field needs to have more than 5 charachters"),
@@ -29,33 +24,51 @@ function LoginForm() {
   const router = useRouter();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const signupGoogleMutaion = useMutation({
     mutationKey: ["loginGoogle"],
     mutationFn: async () => {
-      const res = await signIn();
-      console.log(res.data);
+      const { data, error } = await signIn();
+      if (error?.message) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 
   const signupEmailAndPassword = useMutation({
-    mutationKey: ["loginGoogle"],
+    mutationKey: ["loginEmail"],
     mutationFn: async (formData: z.infer<typeof LoginSchema>) => {
-      const { data } = await authClient.signIn.email({
+      const { data, error } = await authClient.signIn.email({
         email: formData.email,
         password: formData.password,
         callbackURL: "/dashboard",
-        rememberMe: true
-      },)
+        rememberMe: true,
+      });
+      if (error?.message) {
+        throw new Error(error.message);
+      }
       return data;
     },
-  })
+    onSuccess: (data) => {
+      toast.success(`Welcome ${data?.user.name}`);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const onSubmit: SubmitHandler<z.infer<typeof LoginSchema>> = async (data) => {
     signupEmailAndPassword.mutate(data);
   };
-
 
   const navToSignup = () => {
     router.push("/auth/signup");
@@ -98,7 +111,7 @@ function LoginForm() {
                     autoComplete="off"
                     type="password"
                     aria-invalid={fieldState.invalid}
-                    placeholder="Naruto@1234"
+                    placeholder="zach@1234"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -113,31 +126,35 @@ function LoginForm() {
         <CardAction className="flex w-full flex-col gap-4">
           <Button
             form="form-login"
-            disabled={form.formState.isSubmitting}
+            disabled={
+              signupEmailAndPassword.isPending || signupGoogleMutaion.isPending
+            }
             type="submit"
             className="w-full"
           >
-            Login
+            {signupEmailAndPassword.isPending ? <Spinner /> : "Login"}
           </Button>
           <Button
             variant={"outline"}
             id="form-login"
             disabled={form.formState.isSubmitting}
-            className="w-full hover:text-primary"
+            className="hover:text-primary w-full"
             onClick={() => navToSignup()}
           >
             Signup
           </Button>
 
-          <div className="flex items-center my-5 gap-2 ">
-            <div className="grow border-t border-border"></div>
-            <span className="bold text-xs uppercase ">
-              OR
-            </span>
-            <div className="grow border-t border-border"></div>
+          <div className="my-5 flex items-center gap-2">
+            <div className="border-border grow border-t"></div>
+            <span className="bold text-xs uppercase">OR</span>
+            <div className="border-border grow border-t"></div>
           </div>
 
-          <Button variant={"ghost"} onClick={() => signupGoogleMutaion.mutate()}>
+          <Button
+            variant={"ghost"}
+            onClick={() => signupGoogleMutaion.mutate()}
+            className="bg-blue-400"
+          >
             Continue with Google
           </Button>
         </CardAction>
