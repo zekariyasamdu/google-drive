@@ -15,7 +15,6 @@ import { auth } from "~/server/auth/auth";
 export async function createFolderAction(folder: TFolderInsert) {
   return await MUTATION.createFolder(folder);
 }
-
 /**
  * Deletes a folder and its associated data from the database.
  *
@@ -39,7 +38,7 @@ export async function deleteFileAction(file_id: number, file_key: string) {
   return Promise.all([
     MUTATION.deleteFiles(file_id),
     utapi.deleteFiles(file_key),
-  ])
+  ]);
 }
 
 /**
@@ -55,20 +54,15 @@ export async function deleteFileAction(file_id: number, file_key: string) {
 export async function updateFileAction(
   fileId: number,
   updateData: Partial<TFileInsert> = {},
-  fileKey?: string
+  fileKey?: string,
 ) {
   const renameFile = [];
 
   if (updateData.name !== undefined && fileKey !== undefined) {
-    renameFile.push(
-      utapi.renameFiles({ fileKey, newName: updateData.name })
-    );
+    renameFile.push(utapi.renameFiles({ fileKey, newName: updateData.name }));
   }
 
-  return Promise.all([
-    MUTATION.updateFile(fileId, updateData),
-    ...renameFile,
-  ])
+  return Promise.all([MUTATION.updateFile(fileId, updateData), ...renameFile]);
 }
 
 /**
@@ -81,11 +75,10 @@ export async function updateFileAction(
  */
 export async function updateFolderAction(
   folderId: number,
-  updateData: Partial<TFolderInsert>
+  updateData: Partial<TFolderInsert>,
 ) {
   return MUTATION.updateFolder(folderId, updateData);
 }
-
 
 /**
  * Updates a user's metadata in the database.
@@ -95,32 +88,34 @@ export async function updateFolderAction(
  *
  * @returns A promise that resolves when the user is updated.
  */
-export async function updateUserAction(
-  updateData: Partial<TUserInsert>
-) {
+
+export async function updateUserAction(updateData: Partial<TUserInsert>) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  console.log(session)
   if (!session) {
-    return
+    return;
   }
   await MUTATION.updateUser(session.user.id, updateData);
-  return
+  return;
 }
+
 export async function deleteProfilePicture() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
   if (!session) {
-    return
+    return;
   }
   const userId = session.user.id;
   const imageFileKey = session.user.imageFileKey;
-  const promise = []
+  const promise = [];
 
   if (imageFileKey) {
-    promise.push(utapi.deleteFiles(imageFileKey))
+    promise.push(utapi.deleteFiles(imageFileKey));
   }
-  await Promise.all([MUTATION.updateUser(userId, { image: null, imageFileKey: null }), ...promise])
+  await Promise.all([
+    MUTATION.updateUser(userId, { image: null, imageFileKey: null }),
+    ...promise,
+  ]);
 }

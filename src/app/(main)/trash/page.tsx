@@ -19,8 +19,8 @@ const Trash = async () => {
   ]);
   console.log(files.length, folders.length);
 
-  const filterTrashFolders = folders.filter(item => ( item.trash === true));
-  const filterTrashFiles = files.filter(item => ( item.trash === true));
+  const filterTrashFolders = folders.filter((item) => item.trash === true);
+  const filterTrashFiles = files.filter((item) => item.trash === true);
 
   if (filterTrashFolders.length === 0 && filterTrashFiles.length === 0) {
     return <EmptyTrash />;

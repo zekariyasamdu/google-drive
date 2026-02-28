@@ -9,15 +9,24 @@ import { Button } from "../ui/button";
 import { DialogFooter } from "../ui/dialog";
 import { useMutation } from "@tanstack/react-query";
 import { Spinner } from "../ui/spinner";
-import { updateFileAction, updateFolderAction } from "~/action/mutation-actions";
+import {
+  updateFileAction,
+  updateFolderAction,
+} from "~/server/actions/mutation-actions";
 
 const createFolderSchema = z.object({
   name: z.string().min(1),
-})
+});
 
-export default function RenameItemsForm(
-  { variant, itemId, fileKey }:
-    { variant: "Folder" | "File", itemId: number, fileKey?: string }) {
+export default function RenameItemsForm({
+  variant,
+  itemId,
+  fileKey,
+}: {
+  variant: "Folder" | "File";
+  itemId: number;
+  fileKey?: string;
+}) {
   const router = useRouter();
   const mutation = useMutation({
     mutationKey: ["renameItem"],
@@ -25,25 +34,24 @@ export default function RenameItemsForm(
       if (variant === "File" && fileKey !== undefined) {
         return await updateFileAction(itemId, { name: formData.name }, fileKey);
       }
-      return await updateFolderAction(itemId, { name: formData.name })
+      return await updateFolderAction(itemId, { name: formData.name });
     },
     onSuccess: () => {
       router.refresh();
-    }
+    },
   });
 
   const form = useForm<z.infer<typeof createFolderSchema>>({
     resolver: zodResolver(createFolderSchema),
     defaultValues: {
       name: "",
-    }
+    },
   });
 
   function onSubmit(data: z.infer<typeof createFolderSchema>) {
     mutation.mutate(data);
     router.refresh();
   }
-
 
   return (
     <div className="flex flex-col gap-4">
@@ -76,11 +84,14 @@ export default function RenameItemsForm(
         <DialogClose asChild>
           <Button variant="outline">Cancel</Button>
         </DialogClose>
-        <Button disabled={mutation.isPending} form="form-item-rename" type="submit">
+        <Button
+          disabled={mutation.isPending}
+          form="form-item-rename"
+          type="submit"
+        >
           {mutation.isPending ? <Spinner /> : "Create"}
         </Button>
       </DialogFooter>
     </div>
-  )
+  );
 }
-

@@ -14,14 +14,14 @@ import {
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
-import { deleteProfilePicture } from "~/action/mutation-actions";
+import { deleteProfilePicture } from "~/server/actions/mutation-actions";
 import { useRouter } from "next/navigation";
 
 export default function DeleteImageDialog() {
-  const route = useRouter()
+  const route = useRouter();
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      await deleteProfilePicture()
+      await deleteProfilePicture();
     },
     onSuccess: () => {
       toast.success("Profile picture deleted!");

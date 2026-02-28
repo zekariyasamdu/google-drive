@@ -1,6 +1,9 @@
-import LoginForm from "~/components/forms/login";
+import { Suspense, lazy } from "react";
 import { Card } from "~/components/ui/card";
 import Image from "next/image";
+import { Spinner } from "~/components/ui/spinner";
+
+const LoginForm = lazy(() => import("~/components/forms/login"));
 
 const Page = () => {
   return (
@@ -20,7 +23,9 @@ const Page = () => {
             <h1 className="font-bold text-xl">Welcome to Z-Keep</h1>
             <p className="text-center">Effortless cloud storage designed for the modern web. Store your folders, collaborate, and protect your digital content with Z-Keep.</p>
           </div>
-          <LoginForm />
+          <Suspense fallback={<Spinner className="mx-auto" />}>
+            <LoginForm />
+          </Suspense>
         </div>
       </Card>
     </div>

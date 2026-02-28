@@ -11,16 +11,16 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Spinner } from "../ui/spinner";
 import { authClient } from "~/lib/auth/auth-client";
 import type { TFolderInsert } from "~/lib/types/db";
-import { createFolderAction } from "~/action/mutation-actions";
+import { createFolderAction } from "~/server/actions/mutation-actions";
 import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
 
 const createFolderSchema = z.object({
   name: z.string().min(1),
-})
+});
 
 export default function CreateFolderForm() {
   const router = useRouter();
-  const { currentCrumbId } = useNavigateBreadcrumbs()
+  const { currentCrumbId } = useNavigateBreadcrumbs();
   const userInfo = useQuery({
     queryKey: ["usr"],
     queryFn: async () => {
@@ -40,28 +40,27 @@ export default function CreateFolderForm() {
         owner_id: userInfo.data.data.user.id,
         parent: currentCrumbId,
         star: false,
-        trash: false
+        trash: false,
       };
 
       return await createFolderAction(folderData);
     },
     onSuccess: () => {
       router.refresh();
-    }
+    },
   });
 
   const form = useForm<z.infer<typeof createFolderSchema>>({
     resolver: zodResolver(createFolderSchema),
     defaultValues: {
       name: "",
-    }
+    },
   });
 
   function onSubmit(data: z.infer<typeof createFolderSchema>) {
     mutation.mutate(data);
     router.refresh();
   }
-
 
   return (
     <div className="flex flex-col gap-4">
@@ -72,9 +71,7 @@ export default function CreateFolderForm() {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="form-folder-create-name">
-                  Name
-                </FieldLabel>
+                <FieldLabel htmlFor="form-folder-create-name">Name</FieldLabel>
                 <Input
                   {...field}
                   id="form-folder-create-name"
@@ -94,11 +91,14 @@ export default function CreateFolderForm() {
         <DialogClose asChild>
           <Button variant="outline">Cancel</Button>
         </DialogClose>
-        <Button disabled={mutation.isPending} form="form-folder-create" type="submit">
+        <Button
+          disabled={mutation.isPending}
+          form="form-folder-create"
+          type="submit"
+        >
           {mutation.isPending ? <Spinner /> : "Create"}
         </Button>
       </DialogFooter>
     </div>
-  )
+  );
 }
-

@@ -1,13 +1,8 @@
-"use client"
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
-import {
-  CardAction,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "../ui/card";
+import { CardAction, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
@@ -24,10 +19,10 @@ const SignupSchema = z
     email: z.string().email("This is not a valid email"),
     password: z
       .string()
-      .min(8, "Password field needs to have more than 5 charachters"),
+      .min(8, "Password field needs to have more than 8 charachters"),
     reEnterPassword: z
       .string()
-      .min(4, "Username field has to have more than 4 characters"),
+      .min(8, "Password field needs to have more than 8 charachters"),
   })
   .refine((data) => data.reEnterPassword === data.password, {
     path: ["reEnterPassword"],
@@ -42,8 +37,8 @@ export default function SignupForm() {
       email: "",
       username: "",
       password: "",
-      reEnterPassword: ""
-    }
+      reEnterPassword: "",
+    },
   });
   const signupEmailAndPassword = useMutation({
     mutationKey: ["signup"],
@@ -61,24 +56,27 @@ export default function SignupForm() {
       return data;
     },
     onSuccess: () => {
-      toast.success("We have sent an email, verify your account!")
+      toast.success("Account created successfully");
     },
     onError: (e) => {
-      toast.error(e.message)
+      toast.error(e.message);
     },
   });
-  console.log(signupEmailAndPassword.isPending)
+  console.log(signupEmailAndPassword.isPending);
   const navToLogin = () => {
     router.push("/auth/login");
   };
 
   return (
-
     <div className="h-full w-full border-none p-4">
-      <CardHeader className="relative">
-      </CardHeader>
+      <CardHeader className="relative"></CardHeader>
       <CardContent>
-        <form id="form-login" onSubmit={form.handleSubmit(data => signupEmailAndPassword.mutate(data))}>
+        <form
+          id="form-login"
+          onSubmit={form.handleSubmit((data) =>
+            signupEmailAndPassword.mutate(data),
+          )}
+        >
           <FieldGroup>
             <Controller
               name="username"
@@ -89,7 +87,7 @@ export default function SignupForm() {
                   <Input
                     {...field}
                     autoComplete="off"
-                    placeholder="root"
+                    placeholder="zach"
                     required
                     aria-invalid={fieldState.invalid}
                   />
@@ -133,7 +131,7 @@ export default function SignupForm() {
                     autoComplete="off"
                     type="password"
                     aria-invalid={fieldState.invalid}
-                    placeholder="root@1234"
+                    placeholder="zach@1234"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -154,7 +152,7 @@ export default function SignupForm() {
                     autoComplete="off"
                     type="password"
                     aria-invalid={fieldState.invalid}
-                    placeholder="root@1234"
+                    placeholder="zach@1234"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -165,11 +163,11 @@ export default function SignupForm() {
           </FieldGroup>
         </form>
       </CardContent>
-      <CardFooter className="mb-0 mt-4">
-        <CardAction className="w-full flex flex-col gap-4">
+      <CardFooter className="mt-4 mb-0">
+        <CardAction className="flex w-full flex-col gap-4">
           <Button
             form="form-login"
-            disabled={form.formState.isSubmitting || signupEmailAndPassword.isPending}
+            disabled={signupEmailAndPassword.isPending}
             className="w-full"
           >
             Create Account
@@ -177,8 +175,8 @@ export default function SignupForm() {
           <Button
             variant={"outline"}
             id="form-login"
-            disabled={form.formState.isSubmitting || signupEmailAndPassword.isPending}
-            className="w-full hover:text-primary"
+            disabled={signupEmailAndPassword.isPending}
+            className="hover:text-primary w-full"
             onClick={() => navToLogin()}
           >
             Login
