@@ -12,26 +12,26 @@ const resend = new Resend(env.RESEND_API_KEY);
 export const auth = betterAuth({
   plugins: [nextCookies()],
   user: {
-    additionalFields:{
-			imageFileKey: {
-				type: "string",
-				required: false,
-			},
+    additionalFields: {
+      imageFileKey: {
+        type: "string",
+        required: false,
+      },
     },
     deleteUser: {
       enabled: true,
-      sendDeleteAccountVerification: async ({ user, url, token }, request) => {
-        const fromEmail =
-          env.NODE_ENV === "production"
-            ? "delivered@resend.dev"
-            : "delivered@resend.dev";
-        void resend.emails.send({
-          from: fromEmail,
-          to: user.email,
-          subject: "Delete your account",
-          react: DeleteAccountEmail({ verifyUrl: url }),
-        });
-      },
+      // sendDeleteAccountVerification: async ({ user, url, token }, request) => {
+      //   const fromEmail =
+      //     env.NODE_ENV === "production"
+      //       ? "delivered@resend.dev"
+      //       : "delivered@resend.dev";
+      //   void resend.emails.send({
+      //     from: fromEmail,
+      //     to: user.email,
+      //     subject: "Delete your account",
+      //     react: DeleteAccountEmail({ verifyUrl: url }),
+      //   });
+      // },
     },
   },
   database: drizzleAdapter(db, {

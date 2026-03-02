@@ -1,11 +1,27 @@
-"use client"
-import { Trash, Star, Clock, Home, User, ChevronDown } from "lucide-react"
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
+"use client";
+import { Trash, Star, Home, User, ChevronDown } from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "./ui/sidebar";
 import StorageSize from "./storage-size";
 import CreateFolderDialog from "./dialogs/create-folder";
 import CreateFileDialog from "./dialogs/import-file";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@radix-ui/react-collapsible";
-
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@radix-ui/react-collapsible";
+import { usePathname } from "next/navigation";
+import { cn } from "~/lib/utils";
 
 const items = [
   {
@@ -28,35 +44,37 @@ const items = [
     url: "/trash",
     icon: Trash,
   },
-]
+];
 
 export function AppSidebar() {
+  const pathname = usePathname();
   return (
-    <Sidebar variant="floating" >
+    <Sidebar variant="floating">
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
-          </SidebarMenuItem>
+          <SidebarMenuItem></SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent  >
-
+      <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
-
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    className={cn(
+                      item.url === pathname && "bg-primary text-black",
+                    )}
+                  >
                     <a href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -72,32 +90,30 @@ export function AppSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  <SidebarMenuItem >
+                  <SidebarMenuItem>
                     <SidebarMenuButton asChild>
                       <CreateFolderDialog variant="sidebar" />
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  <SidebarMenuItem >
+                  <SidebarMenuItem>
                     <SidebarMenuButton asChild>
-                      <CreateFileDialog variant="sidebar"/>
+                      <CreateFileDialog variant="sidebar" />
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarGroupContent>
-
             </CollapsibleContent>
           </SidebarGroup>
         </Collapsible>
-
       </SidebarContent>
 
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem >
+          <SidebarMenuItem>
             <StorageSize />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

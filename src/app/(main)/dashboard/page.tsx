@@ -1,17 +1,11 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { ContentItemsCard } from "~/components/cards/content-items";
 import { EmptyFolder } from "~/components/empty/empty-folder";
-import { auth } from "~/server/auth/auth";
+import { verifyUser } from "~/server/auth/verify-user";
 import { QUERIES } from "~/server/db/queries";
 
 const Dashboard = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) {
-    redirect("/auth/login");
-  }
+  const session = await verifyUser();
+
   const userId = session.user.id;
   const [folders, files] = await Promise.all([
     QUERIES.getFolders(userId),

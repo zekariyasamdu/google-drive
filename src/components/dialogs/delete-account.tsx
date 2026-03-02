@@ -16,6 +16,7 @@ import { Button } from "../ui/button";
 import { authClient } from "~/lib/auth/auth-client";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Spinner } from "../ui/spinner";
 
 export default function DeleteAccountDialog() {
   const deleteMutation = useMutation({
@@ -29,7 +30,7 @@ export default function DeleteAccountDialog() {
       return data;
     },
     onSuccess: () => {
-      toast.success("We have sent an email, verify your account!");
+      toast.success("Delete Successfully!");
     },
     onError: (e) => {
       toast.error(e.message);
@@ -39,7 +40,9 @@ export default function DeleteAccountDialog() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete Account</Button>
+        <Button variant="destructive" disabled={deleteMutation.isPending}>
+          {deleteMutation.isPending ? <Spinner /> : "Delete Account"}
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent size="sm">
         <AlertDialogHeader>
