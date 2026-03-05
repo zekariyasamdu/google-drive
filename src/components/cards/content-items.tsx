@@ -31,9 +31,9 @@ import {
 } from "../ui/dropdown-menu";
 
 export const ContentItemsCard = ({
-  data,
+  folderOrFileItems,
 }: {
-  data: (TFolderSelect | TFileSelect)[];
+  folderOrFileItems: (TFolderSelect | TFileSelect)[];
 }) => {
   const { setCurrentcrumbId, setBreadcrumbs, currentCrumbId } =
     useNavigateBreadcrumbs();
@@ -105,31 +105,19 @@ export const ContentItemsCard = ({
     },
   });
 
-  function breadcrumbModifier(id: number, name: string) {
-    setCurrentcrumbId(id);
-    setBreadcrumbs({ id, name });
+  // function breadcrumbModifier(id: number, name: string) {
+  //   setCurrentcrumbId(id);
+  //   setBreadcrumbs({ id, name });
+  // }
+
+  function navigateToFolder(parentId: number) {
+    setCurrentcrumbId(parentId);
+    route.push(`dashboard/${parentId}`);
   }
-
-  const filteredData = () => {
-    let filteredItems;
-
-    if (currentPath === "/trash" && currentCrumbId === null) {
-      filteredItems = data.filter((item) => item.trash === true);
-      return filteredItems;
-    }
-
-    if (currentPath === "/star" && currentCrumbId === null) {
-      filteredItems = data.filter((item) => item.star === true);
-      return filteredItems;
-    }
-
-    filteredItems = data.filter((item) => item.parent === currentCrumbId);
-    return filteredItems;
-  };
 
   return (
     <>
-      {filteredData()?.map((item) => (
+      {folderOrFileItems.map((item) => (
         <Card key={item.id} className="relative h-45 w-1/6 gap-2">
           <CardAction className="absolute top-2 right-2">
             <DropdownMenu>
@@ -283,7 +271,7 @@ export const ContentItemsCard = ({
               <CardTitle className="pl-6">{item.name}</CardTitle>
               <CardAction
                 className="flex cursor-pointer gap-3 pl-6 text-blue-600"
-                onClick={() => breadcrumbModifier(item.id, item.name)}
+                onClick={() => navigateToFolder(item.id)}
               >
                 open
               </CardAction>

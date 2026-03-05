@@ -47,7 +47,9 @@ const items = [
 ];
 
 export function AppSidebar() {
-  const pathname = usePathname();
+  const path = usePathname();
+  const pathArray = path.split("/");
+  const pathname = `/${pathArray[1]}`;
   return (
     <Sidebar variant="floating">
       <SidebarHeader>

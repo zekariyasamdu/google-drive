@@ -13,13 +13,13 @@ export default function MainLayout({
   return (
     <SidebarProvider>
       <BreadcrumbProvider>
-        <AppSidebar />
-        <main className="relative w-full">
-          <QueryClientWrapper>
+        <QueryClientWrapper>
+          <AppSidebar />
+          <main className="relative w-full">
             <Header />
             {children}
-          </QueryClientWrapper>
-        </main>
+          </main>
+        </QueryClientWrapper>
       </BreadcrumbProvider>
     </SidebarProvider>
   );

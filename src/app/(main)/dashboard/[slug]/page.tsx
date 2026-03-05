@@ -3,13 +3,19 @@ import { EmptyFolder } from "~/components/empty/empty-folder";
 import { verifyUser } from "~/server/auth/verify-user";
 import { QUERIES } from "~/server/db/queries-mutations";
 
-const Dashboard = async () => {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const session = await verifyUser();
   const userId = session.user.id;
 
+  const { slug } = await params;
+  const slugInt = Number(slug);
   const [folders, files] = await Promise.all([
-    QUERIES.getFolderByParentExcludingTrahsed(userId, null),
-    QUERIES.getFilesByParentExcludingTrashed(userId, null),
+    QUERIES.getFolderByParentExcludingTrahsed(userId, slugInt),
+    QUERIES.getFilesByParentExcludingTrashed(userId, slugInt),
   ]);
 
   if (folders.length === 0 && files.length === 0) {
@@ -22,5 +28,4 @@ const Dashboard = async () => {
       <ContentItemsCard folderOrFileItems={files} />
     </div>
   );
-};
-export default Dashboard;
+}

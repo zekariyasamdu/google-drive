@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import React from "react";
 import { BreadcrumbContext } from "~/contexts/breadcrub-context";
 
@@ -7,7 +8,14 @@ export default function BreadcrumbProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [currentCrumbId, _setCurrentCrumbId] = React.useState<number | null>(null);
+  const pathName = usePathname();
+  const pathArray = pathName.split("/");
+  const currentId = Number(pathArray[2]);
+  const [currentCrumbId, _setCurrentCrumbId] = React.useState<number | null>(
+    Number.isNaN(currentId) ? null : currentId,
+  );
+  console.log("currentCrumbId", currentCrumbId);
+  console.log("path", pathArray[2]);
   const [breadcrumbs, _setBreadcrumbs] = React.useState<
     { id: number; name: string }[]
   >([]);
@@ -41,12 +49,7 @@ export default function BreadcrumbProvider({
       breadcrumbs,
       setBreadcrumbs,
     };
-  }, [
-    currentCrumbId,
-    setCurrentcrumbId,
-    breadcrumbs,
-    setBreadcrumbs,
-  ]);
+  }, [currentCrumbId, setCurrentcrumbId, breadcrumbs, setBreadcrumbs]);
 
   return (
     <BreadcrumbContext.Provider value={value}>
