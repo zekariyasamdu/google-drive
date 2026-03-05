@@ -1,5 +1,5 @@
 "use server";
-import { MUTATION } from "~/server/db/queries";
+import { MUTATION } from "~/server/db/queries-mutations";
 import type { TFileInsert, TFolderInsert, TUserInsert } from "~/lib/types/db";
 import { utapi } from "~/server/uploadthings";
 import { headers } from "next/headers";
