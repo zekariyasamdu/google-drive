@@ -5,50 +5,75 @@ import { filesSchema, foldersSchema, user } from "~/server/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 
 export const QUERIES = {
-  getFoldersByUser: (ownerId: string) => {
-    return db
-      .select()
-      .from(foldersSchema)
-      .where(eq(foldersSchema.owner_id, ownerId));
-  },
-  getFilesByUse: (ownerId: string) => {
-    return db
-      .select()
-      .from(filesSchema)
-      .where(eq(filesSchema.owner_id, ownerId));
-  },
-  getFilesByParentExcludingTrashed: (
-    ownerId: string,
-    parentId: number | null,
-  ) => {
+  // excluding trash
+  getFilesExcludingTrashed: (userId: string, itemsParentId: number | null) => {
     return db
       .select()
       .from(filesSchema)
       .where(
         and(
-          parentId === null
+          itemsParentId === null
             ? isNull(filesSchema.parent)
-            : eq(filesSchema.parent, parentId),
-          eq(filesSchema.owner_id, ownerId),
+            : eq(filesSchema.parent, itemsParentId),
+          eq(filesSchema.owner_id, userId),
           eq(filesSchema.trash, false),
         ),
       );
   },
-  getFolderByParentExcludingTrahsed: (
-    ownerId: string,
-    parentId: number | null,
-  ) => {
+  getFolderExcludingTrahsed: (userId: string, itemsParentId: number | null) => {
     return db
       .select()
       .from(foldersSchema)
       .where(
         and(
-          parentId === null
+          itemsParentId === null
             ? isNull(foldersSchema.parent)
-            : eq(foldersSchema.parent, parentId),
-          eq(foldersSchema.owner_id, ownerId),
+            : eq(foldersSchema.parent, itemsParentId),
+          eq(foldersSchema.owner_id, userId),
           eq(foldersSchema.trash, false),
         ),
+      );
+  },
+  // star
+  getStarredFilesExcludingTrashed: (userId: string) => {
+    return db
+      .select()
+      .from(filesSchema)
+      .where(
+        and(
+          eq(filesSchema.owner_id, userId),
+          eq(filesSchema.trash, false),
+          eq(filesSchema.star, true),
+        ),
+      );
+  },
+  getStarredFoldersExcludingTrashed: (userId: string) => {
+    return db
+      .select()
+      .from(foldersSchema)
+      .where(
+        and(
+          eq(foldersSchema.owner_id, userId),
+          eq(foldersSchema.trash, false),
+          eq(foldersSchema.star, true),
+        ),
+      );
+  },
+  // Trashed
+  getTrashedFiles: (userId: string) => {
+    return db
+      .select()
+      .from(filesSchema)
+      .where(
+        and(eq(filesSchema.owner_id, userId), eq(filesSchema.trash, true)),
+      );
+  },
+  getTrashedFolders: (userId: string) => {
+    return db
+      .select()
+      .from(foldersSchema)
+      .where(
+        and(eq(foldersSchema.owner_id, userId), eq(foldersSchema.trash, true)),
       );
   },
 };

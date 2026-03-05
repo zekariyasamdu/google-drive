@@ -8,8 +8,8 @@ const Dashboard = async () => {
   const userId = session.user.id;
 
   const [folders, files] = await Promise.all([
-    QUERIES.getFolderByParentExcludingTrahsed(userId, null),
-    QUERIES.getFilesByParentExcludingTrashed(userId, null),
+    QUERIES.getFolderExcludingTrahsed(userId, null),
+    QUERIES.getFilesExcludingTrashed(userId, null),
   ]);
 
   if (folders.length === 0 && files.length === 0) {

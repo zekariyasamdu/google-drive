@@ -1,34 +1,25 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { ContentItemsCard } from "~/components/cards/content-items";
 import { EmptyStar } from "~/components/empty/empty-star";
-import { auth } from "~/server/auth/auth";
+import { verifyUser } from "~/server/auth/verify-user";
 import { QUERIES } from "~/server/db/queries-mutations";
 
 const Star = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) {
-    redirect("/auth/login");
-  }
+  const session = await verifyUser();
   const userId = session.user.id;
+
   const [folders, files] = await Promise.all([
-    QUERIES.getFoldersByUser(userId),
-    QUERIES.getFilesByUse(userId),
+    QUERIES.getStarredFoldersExcludingTrashed(userId),
+    QUERIES.getStarredFilesExcludingTrashed(userId),
   ]);
-  console.log(files.length, folders.length);
 
-  const filterStarFolders = folders.filter((t) => t.star === true);
-  const filterStarFiles = files.filter((t) => t.star === true);
-
-  if (filterStarFolders.length === 0 && filterStarFiles.length === 0) {
+  if (folders.length === 0 && files.length === 0) {
     return <EmptyStar />;
   }
+
   return (
     <div className="mt-5 ml-auto flex w-full flex-row flex-wrap gap-10 pl-10">
-      <ContentItemsCard data={folders} />
-      <ContentItemsCard data={files} />
+      <ContentItemsCard folderOrFileItems={folders} />
+      <ContentItemsCard folderOrFileItems={files} />
     </div>
   );
 };

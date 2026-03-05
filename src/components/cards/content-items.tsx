@@ -40,6 +40,7 @@ export const ContentItemsCard = ({
   const route = useRouter();
   const [isOpened, _toggleDialog] = useState(false);
   const currentPath = usePathname();
+  const pathArray = currentPath.split("/");
   const deleteMutation = useMutation({
     mutationKey: ["deleteItem"],
     mutationFn: async ({
@@ -112,7 +113,11 @@ export const ContentItemsCard = ({
 
   function navigateToFolder(parentId: number) {
     setCurrentcrumbId(parentId);
-    route.push(`dashboard/${parentId}`);
+    if (pathArray[1] === "dashboard") {
+      route.push(`/dashboard/${parentId}`);
+      return;
+    }
+    route.push(`/star/${parentId}`);
   }
 
   return (
@@ -269,12 +274,16 @@ export const ContentItemsCard = ({
                 <Folder className="h-11 w-11" />
               </CardHeader>
               <CardTitle className="pl-6">{item.name}</CardTitle>
-              <CardAction
-                className="flex cursor-pointer gap-3 pl-6 text-blue-600"
-                onClick={() => navigateToFolder(item.id)}
-              >
-                open
-              </CardAction>
+              {pathArray[1] === "trash" ? (
+                ""
+              ) : (
+                <CardAction
+                  className="flex cursor-pointer gap-3 pl-6 text-blue-600"
+                  onClick={() => navigateToFolder(item.id)}
+                >
+                  open
+                </CardAction>
+              )}
             </>
           )}
         </Card>
