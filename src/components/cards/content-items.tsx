@@ -16,7 +16,6 @@ import {
   updateFileAction,
   updateFolderAction,
 } from "~/server/actions/mutation-actions";
-import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
 import { type TFolderSelect, type TFileSelect, isFile } from "~/lib/types/db";
 import RenameDialog from "../dialogs/rename-items";
 import Link from "next/link";
@@ -35,8 +34,6 @@ export const ContentItemsCard = ({
 }: {
   folderOrFileItems: (TFolderSelect | TFileSelect)[];
 }) => {
-  const { setCurrentcrumbId, setBreadcrumbs, currentCrumbId } =
-    useNavigateBreadcrumbs();
   const route = useRouter();
   const [isOpened, _toggleDialog] = useState(false);
   const currentPath = usePathname();
@@ -106,13 +103,7 @@ export const ContentItemsCard = ({
     },
   });
 
-  // function breadcrumbModifier(id: number, name: string) {
-  //   setCurrentcrumbId(id);
-  //   setBreadcrumbs({ id, name });
-  // }
-
   function navigateToFolder(parentId: number) {
-    setCurrentcrumbId(parentId);
     if (pathArray[1] === "dashboard") {
       route.push(`/dashboard/${parentId}`);
       return;

@@ -76,6 +76,26 @@ export const QUERIES = {
         and(eq(foldersSchema.owner_id, userId), eq(foldersSchema.trash, true)),
       );
   },
+  // get all parents
+  getAllParents: async (folderId: number | null) => {
+    const parents: { id: number; name: string }[] = [];
+    let currentId = folderId;
+    while (currentId !== null) {
+      const folder = await db
+        .select()
+        .from(foldersSchema)
+        .where(eq(foldersSchema.id, currentId));
+
+      if (!folder[0]) {
+        throw new Error("parent not found!");
+      }
+      const { id, name, parent } = folder[0];
+      parents.push({ id, name });
+      currentId = parent;
+    }
+
+    return parents.reverse();
+  },
 };
 
 export const MUTATION = {

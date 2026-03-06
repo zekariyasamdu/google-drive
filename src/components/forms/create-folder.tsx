@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Button } from "../ui/button";
 import { DialogFooter } from "../ui/dialog";
@@ -12,7 +12,6 @@ import { Spinner } from "../ui/spinner";
 import { authClient } from "~/lib/auth/auth-client";
 import type { TFolderInsert } from "~/lib/types/db";
 import { createFolderAction } from "~/server/actions/mutation-actions";
-import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
 
 const createFolderSchema = z.object({
   name: z.string().min(1),
@@ -20,7 +19,10 @@ const createFolderSchema = z.object({
 
 export default function CreateFolderForm() {
   const router = useRouter();
-  const { currentCrumbId } = useNavigateBreadcrumbs();
+  const currentPath = usePathname();
+  const pathArray = currentPath.split("/");
+  const currentCrumbId = pathArray ? Number(pathArray[2]) : null;
+
   const userInfo = useQuery({
     queryKey: ["usr"],
     queryFn: async () => {
