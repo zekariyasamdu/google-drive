@@ -1,5 +1,5 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -14,9 +14,7 @@ const Nav = ({
   breadcrumbs: { id: number; name: string }[];
 }) => {
   const route = useRouter();
-  const currentPath = usePathname();
-  const pathArray = currentPath.split("/");
-  const path = pathArray[1] ?? "star";
+  const path = "dashboard";
   return (
     <Breadcrumb>
       <BreadcrumbList>

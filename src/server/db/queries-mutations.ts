@@ -77,9 +77,9 @@ export const QUERIES = {
       );
   },
   // get all parents
-  getAllParents: async (folderId: number | null) => {
+  getAllParents: async (childfolderId: number | null) => {
     const parents: { id: number; name: string }[] = [];
-    let currentId = folderId;
+    let currentId = childfolderId;
     while (currentId !== null) {
       const folder = await db
         .select()

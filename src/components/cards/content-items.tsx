@@ -104,11 +104,7 @@ export const ContentItemsCard = ({
   });
 
   function navigateToFolder(parentId: number) {
-    if (pathArray[1] === "dashboard") {
-      route.push(`/dashboard/${parentId}`);
-      return;
-    }
-    route.push(`/star/${parentId}`);
+    route.push(`/dashboard/${parentId}`);
   }
 
   return (
