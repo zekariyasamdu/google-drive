@@ -1,7 +1,6 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { UploadButton } from "~/components/utiles/uploadthing";
-import { useNavigateBreadcrumbs } from "~/hooks/use-navigate-breadcrumbs";
 import { cn } from "~/lib/utils";
 
 export default function UploadBtn({
@@ -9,8 +8,11 @@ export default function UploadBtn({
 }: {
   className?: string;
 } & React.ComponentProps<"button">) {
-  const { currentCrumbId } = useNavigateBreadcrumbs()
   const router = useRouter();
+  const currentPath = usePathname();
+  const pathArray = currentPath.split("/");
+  const crumbId = Number(pathArray[2]);
+
   return (
     <UploadButton
       className={cn(
@@ -19,8 +21,8 @@ export default function UploadBtn({
       )}
       endpoint="imageUploader"
       input={{
-        currentCrumbId,
-        isProfilePicture: null
+        currentCrumbId: isNaN(crumbId) ? null : crumbId,
+        isProfilePicture: null,
       }}
       onClientUploadComplete={(res) => {
         // Do something with the response

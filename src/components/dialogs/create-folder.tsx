@@ -10,12 +10,12 @@ import {
 } from "../ui/dialog";
 
 export default function CreateFolderDialog({
-  variant,
+  variant = "item",
   opened,
   setIsOpen,
 }: {
-  variant?: "header";
-  opened: boolean;
+  variant?: "item" | "header";
+  opened?: boolean;
   setIsOpen?: (action: Action) => void;
 }) {
   if (
