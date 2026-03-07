@@ -14,26 +14,24 @@ export default function UploadZone({
   const route = useRouter();
   const currentPath = usePathname();
   const pathArray = currentPath.split("/");
-  const currentCrumbId = pathArray ? Number(pathArray[2]) : null;
+  const crumbId = Number(pathArray[2]);
 
   return (
     <UploadDropzone
       className={cn(
         className,
-        "ut-button:bg-primary jjjjjj ut-button:text-primary-foreground ut-button:p-1 ut-button:hover:bg-primary/90 ut-button:rounded-lg ut-button:px-6",
+        "ut-button:bg-primary ut-button:text-primary-foreground ut-button:p-1 ut-button:hover:bg-primary/90 ut-button:rounded-lg ut-button:px-6",
       )}
       endpoint="imageUploader"
       input={{
-        currentCrumbId,
+        currentCrumbId: isNaN(crumbId) ? null : crumbId,
         isProfilePicture,
       }}
       onClientUploadComplete={(res) => {
-        // Do something with the response
         toast.success("File uploaded!");
         route.refresh();
       }}
       onUploadError={(error: Error) => {
-        // Do something with the error.
         toast.error(`ERROR! ${error.message}`);
       }}
     />

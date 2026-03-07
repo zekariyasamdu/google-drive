@@ -1,4 +1,4 @@
-import { Folder } from "lucide-react";
+import type { Action } from "../dropdown-menu";
 import CreateFolderForm from "../forms/create-folder";
 import { Button } from "../ui/button";
 import {
@@ -7,22 +7,45 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog"
+} from "../ui/dialog";
 
-export default function CreateFolderDialog({ variant }: { variant?: "sidebar" }) {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        {variant == "sidebar" ?
-          <div className="flex gap-2 p-2 flex-row cursor-pointer">
-            <Folder />
-            <span> Create Folder</span>
-          </div>
-          :
-          <Button className="w-20">Folder</Button>
+export default function CreateFolderDialog({
+  variant,
+  opened,
+  setIsOpen,
+}: {
+  variant?: "header";
+  opened: boolean;
+  setIsOpen?: (action: Action) => void;
+}) {
+  if (
+    variant === "header" &&
+    (setIsOpen === undefined || opened === undefined)
+  ) {
+    throw new Error(
+      "Variant 'header' requires 'opened' and 'setIsOpen' props.",
+    );
+  }
+
+  const dialogAttributes =
+    variant === "header"
+      ? {
+          open: opened,
+          onOpenChange: (open: boolean) => {
+            setIsOpen?.({ type: "toggleFolder", state: open });
+          },
         }
+      : {};
 
-      </DialogTrigger>
+  return (
+    <Dialog {...dialogAttributes}>
+      {variant == "header" ? (
+        ""
+      ) : (
+        <DialogTrigger asChild>
+          <Button className="w-20">Folder</Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add folder</DialogTitle>
@@ -30,5 +53,5 @@ export default function CreateFolderDialog({ variant }: { variant?: "sidebar" })
         <CreateFolderForm />
       </DialogContent>
     </Dialog>
-  )
+  );
 }

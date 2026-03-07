@@ -8,6 +8,7 @@ import RenameUsernameForm from "~/components/forms/rename-account";
 import ChangePassword from "~/components/forms/change-password";
 import ChangeProfilePictureDialog from "~/components/dialogs/change-profile-picture";
 import DeleteImageDialog from "~/components/dialogs/delete-profile-picture";
+import Link from "next/link";
 
 const Profile = async () => {
   const session = await auth.api.getSession({
@@ -29,14 +30,22 @@ const Profile = async () => {
             Profile Picture
           </label>
           <div className="flex gap-6">
-            <Image
-              width={200}
-              height={100}
-              src={profilePicture ?? "/images/no-pfp.jpg"}
-              alt="profile picture"
-            />
+            <Link
+              className="h-30 w-30 overflow-hidden rounded-full"
+              href={profilePicture ?? "/images/no-pfp.jpg"}
+              target="_blank"
+            >
+              <Image
+                src={profilePicture ?? "/images/no-pfp.jpg"}
+                alt="profile picture"
+                width={500}
+                height={500}
+                className="h-full w-full object-cover"
+              />
+            </Link>
+
             <ChangeProfilePictureDialog />
-            <DeleteImageDialog/>
+            <DeleteImageDialog />
           </div>
 
           <RenameUsernameForm initailName={name} />

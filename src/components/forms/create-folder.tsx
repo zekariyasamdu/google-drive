@@ -21,7 +21,7 @@ export default function CreateFolderForm() {
   const router = useRouter();
   const currentPath = usePathname();
   const pathArray = currentPath.split("/");
-  const currentCrumbId = pathArray ? Number(pathArray[2]) : null;
+  const currentCrumbId = Number(pathArray[2]);
 
   const userInfo = useQuery({
     queryKey: ["usr"],
@@ -29,7 +29,6 @@ export default function CreateFolderForm() {
       return await authClient.getSession();
     },
   });
-
   const mutation = useMutation({
     mutationKey: ["createFolder"],
     mutationFn: async (formData: z.infer<typeof createFolderSchema>) => {
@@ -40,7 +39,7 @@ export default function CreateFolderForm() {
       const folderData: TFolderInsert = {
         name: formData.name,
         owner_id: userInfo.data.data.user.id,
-        parent: currentCrumbId,
+        parent: isNaN(currentCrumbId) ? null : currentCrumbId,
         star: false,
         trash: false,
       };
