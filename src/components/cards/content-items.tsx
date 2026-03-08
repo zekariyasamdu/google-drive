@@ -28,6 +28,7 @@ import {
   DropdownMenuPortal,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import ImageViewer from "../dialogs/image-viewer";
 
 export const ContentItemsCard = ({
   folderOrFileItems,
@@ -248,11 +249,8 @@ export const ContentItemsCard = ({
                 {filesize(item.size)}
               </CardDescription>
               <CardTitle className="pl-6">{item.name}</CardTitle>
-              <CardAction className="flex cursor-pointer gap-3 pl-6 text-blue-600">
-                <Link href={item.url} target="_blank">
-                  {" "}
-                  open file
-                </Link>{" "}
+              <CardAction className="flex cursor-pointer gap-3 pl-6">
+                <ImageViewer src={item.url} />
               </CardAction>
             </>
           ) : (

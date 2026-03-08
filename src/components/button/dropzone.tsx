@@ -3,6 +3,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { UploadDropzone } from "~/components/utiles/uploadthing";
 import { cn } from "~/lib/utils";
+import { Spinner } from "../ui/spinner";
 
 export default function UploadZone({
   className,
@@ -20,8 +21,18 @@ export default function UploadZone({
     <UploadDropzone
       className={cn(
         className,
-        "ut-button:bg-primary ut-button:text-primary-foreground ut-button:p-1 ut-button:hover:bg-primary/90 ut-button:rounded-lg ut-button:px-6",
+        "ut-button:bg-primary ut-button:m-3 ut-label:hidden ut-button:text-primary-foreground ut-button:p-1 ut-button:hover:bg-primary/90 ut-button:rounded-lg ut-button:px-6",
       )}
+      content={{
+        allowedContent({ ready, isUploading }) {
+          if (!ready) return "done!";
+          if (isUploading) return <Spinner />;
+          return `Image`;
+        },
+        label() {
+          return `Drag and Drop`;
+        },
+      }}
       endpoint="imageUploader"
       input={{
         currentCrumbId: isNaN(crumbId) ? null : crumbId,
