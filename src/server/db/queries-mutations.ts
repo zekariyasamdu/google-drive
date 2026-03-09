@@ -2,7 +2,7 @@ import "server-only";
 import type { TFileInsert, TFolderInsert, TUserInsert } from "~/lib/types/db";
 import { db } from ".";
 import { filesSchema, foldersSchema, user } from "~/server/db/schema";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, ilike, isNull } from "drizzle-orm";
 
 export const QUERIES = {
   // excluding trash
@@ -95,6 +95,29 @@ export const QUERIES = {
     }
 
     return parents.reverse();
+  },
+  //search
+  getSearchFolders(userId: string, query: string) {
+    return db
+      .select()
+      .from(foldersSchema)
+      .where(
+        and(
+          eq(foldersSchema.owner_id, userId),
+          ilike(foldersSchema.name, `%${query}%`),
+        ),
+      );
+  },
+  getSearchFile(userId: string, query: string) {
+    return db
+      .select()
+      .from(filesSchema)
+      .where(
+        and(
+          eq(filesSchema.owner_id, userId),
+          ilike(filesSchema.name, `%${query}%`),
+        ),
+      );
   },
 };
 

@@ -18,7 +18,6 @@ import {
 } from "~/server/actions/mutation-actions";
 import { type TFolderSelect, type TFileSelect, isFile } from "~/lib/types/db";
 import RenameDialog from "../dialogs/rename-items";
-import Link from "next/link";
 import { filesize } from "filesize";
 import {
   DropdownMenu,
