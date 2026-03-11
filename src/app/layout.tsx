@@ -5,11 +5,17 @@ import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "~/app/api/uploadthing/core";
 import "./globals.css";
 import { Toaster } from "~/components/ui/sonner";
+import { Inter } from "next/font/google";
 
 export const metadata: Metadata = {
   title: "Z-Keep",
   description: "A Google Drive type web app",
 };
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export default function RootLayout({
   children,
@@ -18,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body>
+      <body className={`${inter.className}`}>
         <NextSSRPlugin
           /**
            * The `extractRouterConfig` will extract **only** the route configs

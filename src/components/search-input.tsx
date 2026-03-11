@@ -6,6 +6,9 @@ import { useState } from "react";
 
 const SearchInput = () => {
   const [isOpened, _toggleDialog] = useState(false);
+  const toggleDialog = (value: boolean) => {
+    _toggleDialog(value);
+  };
   return (
     <nav>
       <InputGroup>
@@ -17,7 +20,7 @@ const SearchInput = () => {
           <Search />
         </InputGroupAddon>
       </InputGroup>
-      <SearchDialog opened={isOpened} setIsOpen={_toggleDialog} />
+      <SearchDialog opened={isOpened} setIsOpenAction={toggleDialog} />
     </nav>
   );
 };
