@@ -105,6 +105,7 @@ export const QUERIES = {
         and(
           eq(foldersSchema.owner_id, userId),
           ilike(foldersSchema.name, `%${query}%`),
+          eq(foldersSchema.trash, false),
         ),
       );
   },
@@ -116,6 +117,7 @@ export const QUERIES = {
         and(
           eq(filesSchema.owner_id, userId),
           ilike(filesSchema.name, `%${query}%`),
+          eq(filesSchema.trash, false),
         ),
       );
   },

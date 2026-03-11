@@ -130,7 +130,12 @@ function SearchItems({
               key={file.id}
               className="mx-5 rounded-xl border border-transparent p-1 hover:border-neutral-800"
               onClick={() => {
-                route.push(`/dashboard/${file.parent}`);
+                const parent = file.parent;
+                if (parent) {
+                  route.push(`/dashboard/${file.parent}`);
+                  return;
+                }
+                route.push(`/dashboard`);
               }}
             >
               {file.name}
