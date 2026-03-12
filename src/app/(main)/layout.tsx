@@ -4,20 +4,17 @@ import QueryClientWrapper from "~/components/client-wrapper";
 import Header from "~/components/header";
 import StorageSize from "~/components/storage-size";
 import { SidebarProvider } from "~/components/ui/sidebar";
-import { verifyUser } from "~/server/auth/verify-user";
 
 export default async function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await verifyUser();
-  const userId = session.user.id;
   return (
     <SidebarProvider>
       <QueryClientWrapper>
         <AppSidebar>
-          <StorageSize userId={userId} />
+          <StorageSize />
         </AppSidebar>
         <main className="relative w-full">
           <Header />
