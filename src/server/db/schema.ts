@@ -25,7 +25,7 @@ export const filesSchema = pgTable(
     url: text("url").notNull(),
     trash: boolean("trash").notNull(),
     star: boolean("star").notNull(),
-    size: text("size").notNull(),
+    size: bigint("size", { mode: "number" }).notNull(),
     fileKey: text("key").notNull(),
   },
   (t) => [index("files_parent_id_idx").on(t.parent)],

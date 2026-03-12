@@ -2,7 +2,7 @@ import "server-only";
 import type { TFileInsert, TFolderInsert, TUserInsert } from "~/lib/types/db";
 import { db } from ".";
 import { filesSchema, foldersSchema, user } from "~/server/db/schema";
-import { and, eq, ilike, isNull } from "drizzle-orm";
+import { and, eq, ilike, isNull, sum } from "drizzle-orm";
 
 export const QUERIES = {
   // excluding trash
@@ -120,6 +120,13 @@ export const QUERIES = {
           eq(filesSchema.trash, false),
         ),
       );
+  },
+  // size
+  getTotlaFileSize(userId: string) {
+    return db
+      .select({ size: sum(filesSchema.size) })
+      .from(filesSchema)
+      .where(and(eq(filesSchema.owner_id, userId)));
   },
 };
 

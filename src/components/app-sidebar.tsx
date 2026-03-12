@@ -1,5 +1,5 @@
 "use client";
-import { Trash, Star, Home, User, ChevronDown } from "lucide-react";
+import { Trash, Star, Home, User } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -38,7 +38,7 @@ const items = [
   },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const pathArray = path.split("/");
   const pathname = `/${pathArray[1]}`;
@@ -76,9 +76,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <StorageSize />
-          </SidebarMenuItem>
+          <SidebarMenuItem>{children}</SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
