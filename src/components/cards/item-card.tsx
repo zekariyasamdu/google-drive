@@ -31,15 +31,17 @@ export function ItemCard({ item }: { item: TFolderSelect | TFileSelect }) {
   const route = useRouter();
   const currentPath = usePathname();
   const pathArray = currentPath.split("/");
+  const currentPathString = pathArray[1];
   const isAFile = isFile(item);
-  const isInTrash = pathArray[1] === "trash";
+  const isInTrash = currentPathString === "trash";
   const { ref: dragRef, isDragSource } = useDraggable({
     id: `draggable-${item.id}`,
     data: { isAFile, parent: item.parent },
+    disabled: currentPathString !== "dashboard",
   });
   const { ref: dropRef } = useDroppable({
     id: `droppable-${item.id}`,
-    disabled: isAFile,
+    disabled: isAFile || currentPathString !== "dashboard",
   });
   const handleStar = () =>
     starMutation.mutate({

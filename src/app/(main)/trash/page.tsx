@@ -2,7 +2,6 @@ import { ContentGrid } from "~/components/cards/content-grid";
 import { EmptyTrash } from "~/components/empty/empty-trash";
 import { verifyUser } from "~/server/auth/verify-user";
 import { QUERIES } from "~/server/db/queries-mutations";
-import { DragDropProvider } from "@dnd-kit/react";
 
 const Trash = async () => {
   const session = await verifyUser();
@@ -20,9 +19,7 @@ const Trash = async () => {
 
   return (
     <div className="mt-5 ml-auto flex w-full flex-row flex-wrap gap-10 pl-10">
-      <DragDropProvider>
-        <ContentGrid folderOrFileItems={folderAndFiles} />
-      </DragDropProvider>
+      <ContentGrid folderOrFileItems={folderAndFiles} />
     </div>
   );
 };
