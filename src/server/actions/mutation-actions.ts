@@ -51,6 +51,7 @@ export async function deleteFileAction(file_id: number, file_key: string) {
  *
  * @returns A promise that resolves when all update operations complete.
  */
+
 export async function updateFileAction(
   fileId: number,
   updateData: Partial<TFileInsert> = {},
@@ -62,7 +63,8 @@ export async function updateFileAction(
     renameFile.push(utapi.renameFiles({ fileKey, newName: updateData.name }));
   }
 
-  return Promise.all([MUTATION.updateFile(fileId, updateData), ...renameFile]);
+  await Promise.all([MUTATION.updateFile(fileId, updateData), ...renameFile]);
+  return;
 }
 
 /**
@@ -77,7 +79,8 @@ export async function updateFolderAction(
   folderId: number,
   updateData: Partial<TFolderInsert>,
 ) {
-  return MUTATION.updateFolder(folderId, updateData);
+  await MUTATION.updateFolder(folderId, updateData);
+  return;
 }
 
 /**

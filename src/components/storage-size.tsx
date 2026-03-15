@@ -4,7 +4,7 @@ import { Progress } from "./ui/progress";
 import { filesize } from "filesize";
 import { verifyUser } from "~/server/auth/verify-user";
 
-const LIMIT_IN_BYTES = 100 * 1024 * 1024; // 104,857,600
+const LIMIT_IN_BYTES = 100 * 1024 * 1024; // MB
 
 export default async function StorageSize() {
   const session = await verifyUser();
