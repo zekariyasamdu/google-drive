@@ -49,7 +49,10 @@ const BreadcrumbItems = ({
   return (
     <div className="flex items-center gap-1.5">
       <BreadcrumbItem ref={dropRef}>
-        <BreadcrumbLink onClick={() => route.push(`/${path}/${breadcrumb.id}`)}>
+        <BreadcrumbLink
+          className="w-20 truncate"
+          onClick={() => route.push(`/${path}/${breadcrumb.id}`)}
+        >
           {breadcrumb.name}
         </BreadcrumbLink>
       </BreadcrumbItem>

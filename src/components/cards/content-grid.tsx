@@ -1,7 +1,7 @@
 "use client";
 import { type TFolderSelect, type TFileSelect } from "~/lib/types/db";
-import { ItemCard } from "./item-card";
-export const ContentGrid = ({
+import { GridLayoutItem } from "./item-card";
+export const ContentContainer = ({
   folderOrFileItems,
 }: {
   folderOrFileItems: (TFolderSelect | TFileSelect)[];
@@ -9,7 +9,7 @@ export const ContentGrid = ({
   return (
     <>
       {folderOrFileItems.map((item) => (
-        <ItemCard key={item.id} item={item} />
+        <GridLayoutItem key={item.id} item={item} />
       ))}
     </>
   );

@@ -24,7 +24,11 @@ import { useFolderFileMutation } from "~/hooks/use-folder-file-mutation";
 import { useDraggable, useDroppable } from "@dnd-kit/react";
 import { cn } from "~/lib/utils";
 
-export function ItemCard({ item }: { item: TFolderSelect | TFileSelect }) {
+export function GridLayoutItem({
+  item,
+}: {
+  item: TFolderSelect | TFileSelect;
+}) {
   const [isOpened, _toggleDialog] = useState(false);
   const { deleteMutation, trashMutation, starMutation } =
     useFolderFileMutation();
@@ -135,10 +139,10 @@ export function ItemCard({ item }: { item: TFolderSelect | TFileSelect }) {
           <CardHeader>
             <File className="h-11 w-11" />
           </CardHeader>
-          <CardDescription className="pl-6">
+          <CardDescription className="absolute right-2 bottom-2 pl-6">
             {filesize(item.size)}
           </CardDescription>
-          <CardTitle className="pl-6">{item.name}</CardTitle>
+          <CardTitle className="w-full truncate px-6">{item.name}</CardTitle>
           <CardAction className="flex cursor-pointer gap-3 pl-6">
             <ImageViewer src={item.url} />
           </CardAction>
@@ -148,7 +152,7 @@ export function ItemCard({ item }: { item: TFolderSelect | TFileSelect }) {
           <CardHeader>
             <Folder className="h-11 w-11" />
           </CardHeader>
-          <CardTitle className="pl-6">{item.name}</CardTitle>
+          <CardTitle className="w-full truncate px-6">{item.name}</CardTitle>
           {isInTrash ? (
             ""
           ) : (
