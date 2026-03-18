@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { CardAction, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Ellipsis, Folder, File } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { type TFolderSelect, type TFileSelect, isFile } from "~/lib/types/db";
@@ -23,8 +17,10 @@ import ImageViewer from "../dialogs/image-viewer";
 import { useFolderFileMutation } from "~/hooks/use-folder-file-mutation";
 import { useDraggable, useDroppable } from "@dnd-kit/react";
 import { cn } from "~/lib/utils";
+import { TableCell, TableRow } from "../ui/table";
+import { Button } from "../ui/button";
 
-export function GridLayoutItem({
+export function ListLayoutItem({
   item,
 }: {
   item: TFolderSelect | TFileSelect;
@@ -80,36 +76,69 @@ export function GridLayoutItem({
   }
 
   return (
-    <Card
+    <TableRow
       ref={(el) => {
         dragRef(el);
         dropRef(el);
       }}
-      className="relative h-45 w-1/6 gap-2"
+      className={cn("group")}
     >
-      <CardAction
-        className={cn("absolute top-2 right-2", isDragSource && "bg-amber-100")}
-      >
+      <TableCell className="font-medium">
+        <div className="flex items-center gap-3">
+          {isAFile ? (
+            <File className="h-5 w-5" />
+          ) : (
+            <Folder className="h-5 w-5" />
+          )}
+          <span className="max-w-[200px]" title={item.name}>
+            {item.name}
+          </span>
+        </div>
+      </TableCell>
+
+      <TableCell>{isAFile ? filesize(item.size) : "--"}</TableCell>
+
+      <TableCell className="text-muted-foreground text-xs uppercase">
+        {isAFile ? item.name.split(".").pop() : "Folder"}
+      </TableCell>
+
+      <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Ellipsis className="cursor-pointer" />
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Ellipsis className="h-4 w-4" />
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuPortal>
-            <DropdownMenuContent className="w-56" align="start">
+            <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                {item.star ? (
-                  <DropdownMenuItem onClick={handleStar}>
-                    Unstar
-                  </DropdownMenuItem>
-                ) : (
-                  <DropdownMenuItem onClick={handleStar}>Star</DropdownMenuItem>
-                )}
+                <DropdownMenuItem onClick={handleStar}>
+                  {isAFile ? (
+                    <ImageViewer src={item.url} />
+                  ) : (
+                    !isInTrash && (
+                      <button
+                        onClick={() => navigateToFolder(item.id)}
+                        className="text-sm font-medium text-blue-600 hover:underline"
+                      >
+                        Open
+                      </button>
+                    )
+                  )}
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={handleStar}>
+                  {item.star ? "Unstar" : "Star"}
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => _toggleDialog(true)}>
                   Rename
                 </DropdownMenuItem>
                 {item.trash ? (
                   <>
-                    <DropdownMenuItem onClick={handleDelete}>
+                    <DropdownMenuItem
+                      onClick={handleDelete}
+                      className="text-red-600"
+                    >
                       Delete forever
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleTrash}>
@@ -125,6 +154,7 @@ export function GridLayoutItem({
             </DropdownMenuContent>
           </DropdownMenuPortal>
         </DropdownMenu>
+
         <RenameDialog
           opened={isOpened}
           setIsOpen={_toggleDialog}
@@ -133,38 +163,7 @@ export function GridLayoutItem({
             ? { fileKey: item.fileKey, variant: "File" }
             : { variant: "Folder" })}
         />
-      </CardAction>
-      {isAFile ? (
-        <>
-          <CardHeader>
-            <File className="h-11 w-11" />
-          </CardHeader>
-          <CardDescription className="absolute right-2 bottom-2 pl-6">
-            {filesize(item.size)}
-          </CardDescription>
-          <CardTitle className="w-full truncate px-6">{item.name}</CardTitle>
-          <CardAction className="flex cursor-pointer gap-3 pl-6">
-            <ImageViewer src={item.url} />
-          </CardAction>
-        </>
-      ) : (
-        <>
-          <CardHeader>
-            <Folder className="h-11 w-11" />
-          </CardHeader>
-          <CardTitle className="w-full truncate px-6">{item.name}</CardTitle>
-          {isInTrash ? (
-            ""
-          ) : (
-            <CardAction
-              className="flex cursor-pointer gap-3 pl-6 text-blue-600"
-              onClick={() => navigateToFolder(item.id)}
-            >
-              open
-            </CardAction>
-          )}
-        </>
-      )}
-    </Card>
+      </TableCell>
+    </TableRow>
   );
 }
