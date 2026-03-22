@@ -32,7 +32,13 @@ export default function DriveContent({
     setIsMounted(true);
   }, []);
 
-  if (!isMounted) return "";
+  if (!isMounted)
+    return (
+      <div className="mr-auto ml-auto flex h-screen w-full justify-center pt-25">
+        <Spinner />
+      </div>
+    );
+
   const pathArray = currentPath.split("/");
   const path = pathArray[1] ?? "star";
   const folderAndFiles = [...folders, ...files];
@@ -40,7 +46,7 @@ export default function DriveContent({
   if (folders.length === 0 && files.length === 0) {
     return (
       <div>
-        <div className="mt-5 ml-5 flex w-full items-center justify-between px-5">
+        <div className="mt-5 ml-5 flex w-full items-center justify-between px-10">
           <Nav breadcrumbs={parents} />
           <GridListToggle isGrid={isGrid} setIsGrid={setIsGrid} />
         </div>
@@ -55,7 +61,7 @@ export default function DriveContent({
         <Nav breadcrumbs={parents} />
         <GridListToggle isGrid={isGrid} setIsGrid={setIsGrid} />
       </div>
-      <div className="mt-5 ml-auto flex w-full flex-row flex-wrap gap-10 pl-10">
+      <div className="mt-5 ml-auto flex w-full flex-row flex-wrap gap-10 px-10">
         <ContentContainer folderOrFileItems={folderAndFiles} isGrid={isGrid} />
       </div>
     </div>

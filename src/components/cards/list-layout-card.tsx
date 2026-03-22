@@ -19,12 +19,14 @@ import { useDraggable, useDroppable } from "@dnd-kit/react";
 import { cn } from "~/lib/utils";
 import { TableCell, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
+import ImageViewerListLayout from "../dialogs/image-viewer-list-layout";
 
 export function ListLayoutItem({
   item,
 }: {
   item: TFolderSelect | TFileSelect;
 }) {
+  const [isOpenedRename, _toggleDialogRename] = useState(false);
   const [isOpened, _toggleDialog] = useState(false);
   const { deleteMutation, trashMutation, starMutation } =
     useFolderFileMutation();
@@ -112,25 +114,22 @@ export function ListLayoutItem({
           <DropdownMenuPortal>
             <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  {isAFile ? (
-                    <ImageViewer src={item.url} />
-                  ) : (
-                    !isInTrash && (
-                      <button
-                        onClick={() => navigateToFolder(item.id)}
-                        className="text-sm font-medium text-blue-600 hover:underline"
-                      >
-                        Open
-                      </button>
-                    )
-                  )}
-                </DropdownMenuItem>
+                {isAFile ? (
+                  <DropdownMenuItem onClick={() => _toggleDialog(true)}>
+                    Open
+                  </DropdownMenuItem>
+                ) : (
+                  !isInTrash && (
+                    <DropdownMenuItem onClick={() => navigateToFolder(item.id)}>
+                      Open
+                    </DropdownMenuItem>
+                  )
+                )}
 
                 <DropdownMenuItem onClick={handleStar}>
                   {item.star ? "Unstar" : "Star"}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => _toggleDialog(true)}>
+                <DropdownMenuItem onClick={() => _toggleDialogRename(true)}>
                   Rename
                 </DropdownMenuItem>
                 {item.trash ? (
@@ -154,10 +153,19 @@ export function ListLayoutItem({
             </DropdownMenuContent>
           </DropdownMenuPortal>
         </DropdownMenu>
+        {isAFile ? (
+          <ImageViewerListLayout
+            src={item.url}
+            opened={isOpened}
+            setIsOpen={_toggleDialog}
+          />
+        ) : (
+          ""
+        )}
 
         <RenameDialog
-          opened={isOpened}
-          setIsOpen={_toggleDialog}
+          opened={isOpenedRename}
+          setIsOpen={_toggleDialogRename}
           itemId={item.id}
           {...(isAFile
             ? { fileKey: item.fileKey, variant: "File" }
