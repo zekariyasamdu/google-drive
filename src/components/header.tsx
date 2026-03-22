@@ -1,7 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth/auth";
-import Signout from "./button/signout";
 import Image from "next/image";
 import SearchInput from "./search-input";
 import { DropdownImport } from "./dropdown-menu";
@@ -30,7 +29,6 @@ const Header = async () => {
             className="h-full w-full object-cover"
           />
         </div>
-        <Signout />
       </div>
     </div>
   );

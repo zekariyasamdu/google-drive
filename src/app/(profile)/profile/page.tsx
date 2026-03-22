@@ -9,6 +9,7 @@ import ChangePassword from "~/components/forms/change-password";
 import ChangeProfilePictureDialog from "~/components/dialogs/change-profile-picture";
 import DeleteImageDialog from "~/components/dialogs/delete-profile-picture";
 import Link from "next/link";
+import SignoutDialog from "~/components/dialogs/signout-account";
 
 const Profile = async () => {
   const session = await auth.api.getSession({
@@ -70,8 +71,8 @@ const Profile = async () => {
         <ChangePassword />
       </section>
 
-      <section className="flex h-fit w-3/5 flex-col">
-        <h2 className="mb-4 text-lg">Danger Zone</h2>
+      <section className="flex h-fit w-3/5 flex-col gap-3">
+        <h2 className="text-lg">Danger Zone</h2>
         <div className="border-border grow border-t"></div>
         <div className="border-destructive/50 flex flex-row items-center justify-between gap-6 space-y-3 rounded-lg border p-4">
           <div>
@@ -82,6 +83,14 @@ const Profile = async () => {
             </div>
           </div>
           <DeleteAccountDialog />
+        </div>
+
+        <div className="border-destructive/50 flex flex-row items-center justify-between gap-6 space-y-3 rounded-lg border p-4">
+          <div>
+            <div className="font-bold">Signout</div>
+            <div>Signout from this current account.</div>
+          </div>
+          <SignoutDialog />
         </div>
       </section>
     </div>

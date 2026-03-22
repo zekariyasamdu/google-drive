@@ -5,14 +5,9 @@ import { EmptyFolder } from "./empty/empty-folder";
 import Nav from "./navigation";
 import { usePathname } from "next/navigation";
 import { EmptyStar } from "./empty/empty-star";
-import {
-  useEffect,
-  useLayoutEffect,
-  useState,
-  type Dispatch,
-  type SetStateAction,
-} from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { List, LayoutGrid } from "lucide-react";
+import { Spinner } from "./ui/spinner";
 
 export default function DriveContent({
   folders,
@@ -37,7 +32,7 @@ export default function DriveContent({
     setIsMounted(true);
   }, []);
 
-  if (!isMounted) return null;
+  if (!isMounted) return "";
   const pathArray = currentPath.split("/");
   const path = pathArray[1] ?? "star";
   const folderAndFiles = [...folders, ...files];
@@ -45,7 +40,7 @@ export default function DriveContent({
   if (folders.length === 0 && files.length === 0) {
     return (
       <div>
-        <div className="mt-5 ml-5">
+        <div className="mt-5 ml-5 flex w-full items-center justify-between px-5">
           <Nav breadcrumbs={parents} />
           <GridListToggle isGrid={isGrid} setIsGrid={setIsGrid} />
         </div>

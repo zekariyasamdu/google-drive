@@ -83,7 +83,7 @@ export function ListLayoutItem({
       }}
       className={cn("group")}
     >
-      <TableCell className="font-medium">
+      <TableCell className="overflow-hidden font-medium">
         <div className="flex items-center gap-3">
           {isAFile ? (
             <File className="h-5 w-5" />
@@ -112,7 +112,7 @@ export function ListLayoutItem({
           <DropdownMenuPortal>
             <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                <DropdownMenuItem onClick={handleStar}>
+                <DropdownMenuItem>
                   {isAFile ? (
                     <ImageViewer src={item.url} />
                   ) : (
