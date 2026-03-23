@@ -4,7 +4,7 @@ export const dynamic = "force-static";
 
 const AuthUiWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="mr-auto ml-auto h-screen w-full pt-25">
+    <div className="mr-auto ml-auto h-fit w-full py-20">
       <Card className="short mr-auto ml-auto flex h-fit w-100 flex-row items-center p-3 md:w-150 lg:h-200 lg:w-3/5">
         <Card className="relative inset-0 z-0 hidden h-full w-2/5 grow-0 bg-[url('/images/peacock.jpg')] bg-cover bg-center lg:block">
           <h1 className="absolute bottom-17 left-10 z-20 translate-y-[-50%] text-2xl font-bold">

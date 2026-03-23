@@ -16,16 +16,15 @@ import { Button } from "../ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
-import { signOut } from "better-auth/api";
 import { useRouter } from "next/navigation";
+import { signOut } from "~/lib/auth/auth-client";
 
 export default function SignoutDialog() {
   const route = useRouter();
   const signoutMutation = useMutation({
     mutationFn: () => handelSignout(),
-
     onSuccess: () => {
-      toast.success("Delete Successfully!");
+      toast.success("Signout Successfully!");
     },
     onError: (e) => {
       toast.error(e.message);
