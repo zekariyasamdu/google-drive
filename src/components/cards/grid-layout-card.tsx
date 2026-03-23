@@ -78,14 +78,14 @@ export function GridLayoutItem({
   function navigateToFolder(parentId: number) {
     route.push(`/dashboard/${parentId}`);
   }
-
+  // w-1/6
   return (
     <Card
       ref={(el) => {
         dragRef(el);
         dropRef(el);
       }}
-      className="relative h-45 w-1/6 gap-2"
+      className="relative h-45 w-55 gap-2 sm:w-40 md:w-45 lg:w-40 xl:w-40"
     >
       <CardAction className={"absolute top-2 right-2"}>
         <DropdownMenu>

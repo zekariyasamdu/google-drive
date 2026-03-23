@@ -12,7 +12,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "./ui/sidebar";
-import StorageSize from "./storage-size";
 import { usePathname } from "next/navigation";
 import { cn } from "~/lib/utils";
 const items = [

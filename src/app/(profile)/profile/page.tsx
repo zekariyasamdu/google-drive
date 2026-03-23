@@ -10,6 +10,7 @@ import ChangeProfilePictureDialog from "~/components/dialogs/change-profile-pict
 import DeleteImageDialog from "~/components/dialogs/delete-profile-picture";
 import Link from "next/link";
 import SignoutDialog from "~/components/dialogs/signout-account";
+import PhoneNav from "~/components/phone-navbar";
 
 const Profile = async () => {
   const session = await auth.api.getSession({
@@ -22,15 +23,20 @@ const Profile = async () => {
   const profilePicture = session.user.image;
   const name = session.user.name;
   return (
-    <div className="bg-background ml-12 flex h-fit w-full flex-col justify-center gap-6 p-4">
-      <section className="flex h-fit w-3/5 flex-col">
-        <h2 className="text-foreground mb-4 text-xl">Profile Information</h2>
+    <div className="bg-background ml-12 flex h-fit w-fit flex-col justify-center gap-6 p-4 md:w-full">
+      <section className="flex h-fit w-100 flex-col sm:w-3/5">
+        <div className="flex flex-row items-center justify-between">
+          <h2 className="text-foreground mb-4 text-xl">Profile Information</h2>
+          <div className="mb-4 md:hidden">
+            <PhoneNav />
+          </div>
+        </div>
         <div className="border-border grow border-t"></div>
         <div className="space-y-4 pt-3">
           <label className="text-foreground mb-2 block text-sm font-medium">
             Profile Picture
           </label>
-          <div className="flex gap-6">
+          <div className="flex flex-col items-center justify-center gap-6">
             <Link
               className="h-30 w-30 overflow-hidden rounded-full"
               href={profilePicture ?? "/images/no-pfp.jpg"}
@@ -44,9 +50,10 @@ const Profile = async () => {
                 className="h-full w-full object-cover"
               />
             </Link>
-
-            <ChangeProfilePictureDialog />
-            <DeleteImageDialog />
+            <div className="flex flex-row gap-6">
+              <ChangeProfilePictureDialog />
+              <DeleteImageDialog />
+            </div>
           </div>
 
           <RenameUsernameForm initailName={name} />
@@ -67,14 +74,14 @@ const Profile = async () => {
         </div>
       </section>
 
-      <section className="flex h-fit w-3/5 flex-col">
+      <section className="flex h-fit w-100 flex-col sm:w-3/5">
         <ChangePassword />
       </section>
 
-      <section className="flex h-fit w-3/5 flex-col gap-3">
+      <section className="flex h-fit w-100 flex-col gap-3 sm:w-3/5">
         <h2 className="text-lg">Danger Zone</h2>
         <div className="border-border grow border-t"></div>
-        <div className="border-destructive/50 flex flex-row items-center justify-between gap-6 space-y-3 rounded-lg border p-4">
+        <div className="border-destructive/50 roundd-lg flex flex-row items-center justify-between gap-6 space-y-3 border p-4">
           <div>
             <div className="font-bold"> Delete Account</div>
             <div>
