@@ -6,6 +6,7 @@ import { ourFileRouter } from "~/app/api/uploadthing/core";
 import "./globals.css";
 import { Toaster } from "~/components/ui/sonner";
 import { Inter } from "next/font/google";
+import { PostHogIdentify } from "./_provider/pageview-tracker";
 
 export const metadata: Metadata = {
   title: "Z-Keep",
@@ -25,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className}`}>
+        <PostHogIdentify />
         <NextSSRPlugin
           /**
            * The `extractRouterConfig` will extract **only** the route configs
