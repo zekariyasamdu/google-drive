@@ -29,8 +29,9 @@ export default function DNDWrapper({
           parent: string | null;
         };
 
-        const getIdNumber = (id?: string | number) => {
-          if (!id) return null;
+        const getIdNumber = (id: string | number | undefined | null) => {
+          if (id === null) return null;
+          if (id === undefined) return undefined;
           const part = id.toString().split("-")[1];
           const num = Number(part);
           return Number.isNaN(num) ? null : num;
@@ -38,6 +39,7 @@ export default function DNDWrapper({
 
         const draggedId = getIdNumber(source?.id);
         const droppedOnId = getIdNumber(target?.id);
+        if (droppedOnId === undefined) return;
 
         console.log("dropped", draggedId);
         console.log("parent", parent);
@@ -46,39 +48,27 @@ export default function DNDWrapper({
         if (!draggedId || draggedId === droppedOnId || droppedOnId === parent)
           return;
 
-        if (isAFile) {
-          toast.promise(
-            () =>
-              updateFileAction(draggedId, {
-                parent: droppedOnId,
-              }),
-            {
-              loading: "Loading...",
-              success: async () => {
-                await queryClient.invalidateQueries({ queryKey });
-                return "Has been moved!";
-              },
-              error: (e) => {
-                console.log(e);
-                return "Error";
-              },
-            },
-          );
-          return;
-        }
-
         toast.promise(
-          () =>
-            updateFolderAction(draggedId, {
+          () => {
+            if (isAFile) {
+              return updateFileAction(draggedId, {
+                parent: droppedOnId,
+              });
+            }
+            return updateFolderAction(draggedId, {
               parent: droppedOnId,
-            }),
+            });
+          },
           {
             loading: "Loading...",
             success: async () => {
               await queryClient.invalidateQueries({ queryKey });
               return "Has been moved!";
             },
-            error: "Error",
+            error: (e) => {
+              console.log(e);
+              return "Error";
+            },
           },
         );
       }}
