@@ -1,5 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
+import { processPath } from "~/lib/utils";
 import {
   deleteFileAction,
   deleteFolderAction,
@@ -8,7 +9,11 @@ import {
 } from "~/server/actions/mutation-actions";
 
 export function useFolderFileMutation() {
-  const route = useRouter();
+  const path = usePathname();
+  const { routeName, folderId } = processPath(path);
+  const queryKey = ["folderAndFile", routeName, folderId];
+  const queryClient = useQueryClient();
+
   const deleteMutation = useMutation({
     mutationKey: ["deleteItem"],
     mutationFn: async ({
@@ -18,15 +23,13 @@ export function useFolderFileMutation() {
       itemId: number;
       fileKey?: string;
     }) => {
-      if (fileKey !== undefined) {
-        await deleteFileAction(itemId, fileKey);
+      if (!fileKey) {
+        await deleteFolderAction(itemId);
         return;
       }
-      await deleteFolderAction(itemId);
+      await deleteFileAction(itemId, fileKey);
     },
-    onMutate: () => {
-      route.refresh();
-    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey }),
   });
 
   const trashMutation = useMutation({
@@ -46,9 +49,7 @@ export function useFolderFileMutation() {
       }
       await updateFolderAction(itemId, { trash: state });
     },
-    onMutate: () => {
-      route.refresh();
-    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey }),
   });
 
   const starMutation = useMutation({
@@ -69,9 +70,7 @@ export function useFolderFileMutation() {
 
       await updateFolderAction(itemId, { star: state });
     },
-    onMutate: () => {
-      route.refresh();
-    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey }),
   });
 
   return {

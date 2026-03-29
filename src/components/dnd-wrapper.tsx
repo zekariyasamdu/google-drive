@@ -1,7 +1,9 @@
 "use client";
 import { DragDropProvider } from "@dnd-kit/react";
-import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
 import { toast } from "sonner";
+import { processPath } from "~/lib/utils";
 import {
   updateFileAction,
   updateFolderAction,
@@ -12,7 +14,11 @@ export default function DNDWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  const route = useRouter();
+  const path = usePathname();
+  const { routeName, folderId } = processPath(path);
+  const queryClient = useQueryClient();
+  const queryKey = ["folderAndFile", routeName, folderId];
+
   return (
     <DragDropProvider
       onDragEnd={(event) => {
@@ -48,9 +54,9 @@ export default function DNDWrapper({
               }),
             {
               loading: "Loading...",
-              success: () => {
-                route.refresh();
-                return "Has been Moved!";
+              success: async () => {
+                await queryClient.invalidateQueries({ queryKey });
+                return "Has been moved!";
               },
               error: (e) => {
                 console.log(e);
@@ -68,9 +74,9 @@ export default function DNDWrapper({
             }),
           {
             loading: "Loading...",
-            success: () => {
-              route.refresh();
-              return "has been created";
+            success: async () => {
+              await queryClient.invalidateQueries({ queryKey });
+              return "Has been moved!";
             },
             error: "Error",
           },

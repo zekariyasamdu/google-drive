@@ -2,8 +2,9 @@
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { UploadDropzone } from "~/components/utiles/uploadthing";
-import { cn } from "~/lib/utils";
+import { cn, processPath } from "~/lib/utils";
 import { Spinner } from "../ui/spinner";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function UploadZone({
   className,
@@ -14,8 +15,9 @@ export default function UploadZone({
 } & React.ComponentProps<"button">) {
   const route = useRouter();
   const currentPath = usePathname();
-  const pathArray = currentPath.split("/");
-  const crumbId = Number(pathArray[2]);
+  const queryClient = useQueryClient();
+  const { routeName, folderId } = processPath(currentPath);
+  const queryKey = ["folderAndFile", routeName, folderId];
 
   return (
     <UploadDropzone
@@ -35,10 +37,11 @@ export default function UploadZone({
       }}
       endpoint="imageUploader"
       input={{
-        currentCrumbId: isNaN(crumbId) ? null : crumbId,
+        currentCrumbId: folderId,
         isProfilePicture,
       }}
-      onClientUploadComplete={(res) => {
+      onClientUploadComplete={async (res) => {
+        await queryClient.invalidateQueries({ queryKey });
         toast.success("File uploaded!");
         route.refresh();
       }}

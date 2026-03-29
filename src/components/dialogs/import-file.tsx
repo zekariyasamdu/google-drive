@@ -15,31 +15,17 @@ export default function CreateFileDialog({
   opened,
   setIsOpen,
 }: {
-  variant?: "item" | "header";
-  opened?: boolean;
-  setIsOpen?: (action: Action) => void;
+  variant: "item" | "header";
+  opened: boolean;
+  setIsOpen: (action: Action) => void;
 }) {
-  if (
-    variant === "header" &&
-    (setIsOpen === undefined || opened === undefined)
-  ) {
-    throw new Error(
-      "Variant 'header' requires 'opened' and 'setIsOpen' props.",
-    );
-  }
-
-  const dialogAttributes =
-    variant === "header"
-      ? {
-          open: opened,
-          onOpenChange: (open: boolean) => {
-            setIsOpen?.({ type: "toggleFile", state: open });
-          },
-        }
-      : {};
-
   return (
-    <Dialog {...dialogAttributes}>
+    <Dialog
+      open={opened}
+      onOpenChange={(open: boolean) => {
+        setIsOpen?.({ type: "toggleFile", state: open });
+      }}
+    >
       {variant !== "header" && (
         <DialogTrigger asChild>
           <Button className="w-20" variant="outline">

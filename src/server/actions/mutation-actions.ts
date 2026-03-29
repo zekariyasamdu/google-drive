@@ -2,8 +2,8 @@
 import { MUTATION } from "~/server/db/queries-mutations";
 import type { TFileInsert, TFolderInsert, TUserInsert } from "~/lib/types/db";
 import { utapi } from "~/server/uploadthings";
-import { headers } from "next/headers";
-import { auth } from "~/server/auth/auth";
+import { revalidatePath } from "next/cache";
+import { verifyUser } from "../auth/verify-user";
 
 /**
  * Creates a new folder record in the database.
@@ -13,7 +13,9 @@ import { auth } from "~/server/auth/auth";
  * @returns A promise that resolves with the created folder.
  */
 export async function createFolderAction(folder: TFolderInsert) {
-  return await MUTATION.createFolder(folder);
+  await verifyUser();
+  await MUTATION.createFolder(folder);
+  return;
 }
 /**
  * Deletes a folder and its associated data from the database.
@@ -23,7 +25,9 @@ export async function createFolderAction(folder: TFolderInsert) {
  * @returns A promise that resolves when the folder is deleted.
  */
 export async function deleteFolderAction(folder_id: number) {
-  return await MUTATION.deleteFolder(folder_id);
+  await verifyUser();
+  await MUTATION.deleteFolder(folder_id);
+  return;
 }
 
 /**
@@ -35,10 +39,12 @@ export async function deleteFolderAction(folder_id: number) {
  * @returns A promise that resolves when both delete operations complete.
  */
 export async function deleteFileAction(file_id: number, file_key: string) {
-  return Promise.all([
+  await verifyUser();
+  await Promise.all([
     MUTATION.deleteFiles(file_id),
     utapi.deleteFiles(file_key),
   ]);
+  return;
 }
 
 /**
@@ -57,6 +63,7 @@ export async function updateFileAction(
   updateData: Partial<TFileInsert> = {},
   fileKey?: string,
 ) {
+  await verifyUser();
   const renameFile = [];
 
   if (updateData.name !== undefined && fileKey !== undefined) {
@@ -79,6 +86,7 @@ export async function updateFolderAction(
   folderId: number,
   updateData: Partial<TFolderInsert>,
 ) {
+  await verifyUser();
   await MUTATION.updateFolder(folderId, updateData);
   return;
 }
@@ -93,23 +101,13 @@ export async function updateFolderAction(
  */
 
 export async function updateUserAction(updateData: Partial<TUserInsert>) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) {
-    return;
-  }
+  const session = await verifyUser();
   await MUTATION.updateUser(session.user.id, updateData);
   return;
 }
 
 export async function deleteProfilePicture() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (!session) {
-    return;
-  }
+  const session = await verifyUser();
   const userId = session.user.id;
   const imageFileKey = session.user.imageFileKey;
   const promise = [];
@@ -121,4 +119,8 @@ export async function deleteProfilePicture() {
     MUTATION.updateUser(userId, { image: null, imageFileKey: null }),
     ...promise,
   ]);
+}
+
+export async function revalidatePathMutation(path: string) {
+  revalidatePath(path, "page");
 }

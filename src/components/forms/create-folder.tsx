@@ -3,52 +3,75 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Button } from "../ui/button";
 import { DialogFooter } from "../ui/dialog";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Spinner } from "../ui/spinner";
 import { authClient } from "~/lib/auth/auth-client";
-import type { TFolderInsert } from "~/lib/types/db";
+import type { TFileSelect, TFolderInsert, TFolderSelect } from "~/lib/types/db";
 import { createFolderAction } from "~/server/actions/mutation-actions";
+import type { Action } from "../dropdown-menu";
+import { toast } from "sonner";
+import { processPath } from "~/lib/utils";
 
-const createFolderSchema = z.object({
+export const createFolderSchema = z.object({
   name: z.string().min(1),
 });
 
-export default function CreateFolderForm() {
-  const router = useRouter();
+export default function CreateFolderForm({
+  setIsOpen,
+}: {
+  setIsOpen: (action: Action) => void;
+}) {
   const currentPath = usePathname();
-  const pathArray = currentPath.split("/");
-  const currentCrumbId = Number(pathArray[2]);
+  const { routeName, folderId } = processPath(currentPath);
+  const queryClient = useQueryClient();
+  const { data: session } = authClient.useSession();
 
-  const userInfo = useQuery({
-    queryKey: ["usr"],
-    queryFn: async () => {
-      return await authClient.getSession();
-    },
-  });
+  const queryKey = ["folderAndFile", routeName, folderId];
+
   const mutation = useMutation({
     mutationKey: ["createFolder"],
-    mutationFn: async (formData: z.infer<typeof createFolderSchema>) => {
-      if (!userInfo.data?.data?.user.id) {
-        throw new Error("Not authenticated");
-      }
+    mutationFn: async (
+      formData: TFolderInsert & { tempId: string },
+      context,
+    ) => {
+      const { tempId, ...data } = formData;
+      await context.client.cancelQueries({ queryKey });
+      let previousTodos = context.client.getQueryData(queryKey);
+      previousTodos = previousTodos ?? { folders: [], files: [] };
 
-      const folderData: TFolderInsert = {
-        name: formData.name,
-        owner_id: userInfo.data.data.user.id,
-        parent: isNaN(currentCrumbId) ? null : currentCrumbId,
-        star: false,
-        trash: false,
-      };
+      context.client.setQueryData(
+        queryKey,
+        (
+          old: { folders: TFolderSelect[]; files: TFileSelect[] } | undefined,
+        ) => {
+          const current = old ?? { folders: [], files: [] };
 
-      return await createFolderAction(folderData);
+          return {
+            folders: [...current.folders, formData],
+            files: current.files,
+          };
+        },
+      );
+      toast.success("Folder created!");
+      await createFolderAction({ ...data });
+      return { previousTodos };
     },
-    onSuccess: () => {
-      router.refresh();
+    onError: (
+      err,
+      newTodo,
+      onMutateResult:
+        | { previousTodos: { folders: TFolderSelect[]; files: TFileSelect[] } }
+        | undefined,
+      context,
+    ) => {
+      context.client.setQueryData(queryKey, onMutateResult?.previousTodos);
+      toast.error("Error creating folder!");
     },
+    onSettled: () => queryClient.invalidateQueries({ queryKey }),
   });
 
   const form = useForm<z.infer<typeof createFolderSchema>>({
@@ -59,8 +82,19 @@ export default function CreateFolderForm() {
   });
 
   function onSubmit(data: z.infer<typeof createFolderSchema>) {
-    mutation.mutate(data);
-    router.refresh();
+    if (!session?.user?.id) {
+      throw new Error("Not authenticated");
+    }
+    const tempId = crypto.randomUUID();
+    const folderData: TFolderInsert = {
+      name: data.name,
+      owner_id: session.user.id,
+      parent: folderId,
+      star: false,
+      trash: false,
+    };
+    mutation.mutate({ ...folderData, tempId });
+    setIsOpen({ type: "toggleFolder", state: false });
   }
 
   return (
@@ -96,6 +130,7 @@ export default function CreateFolderForm() {
           disabled={mutation.isPending}
           form="form-folder-create"
           type="submit"
+          className="w-20"
         >
           {mutation.isPending ? <Spinner /> : "Create"}
         </Button>

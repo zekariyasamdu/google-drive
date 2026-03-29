@@ -8,6 +8,8 @@ import {
   BreadcrumbSeparator,
 } from "./ui/breadcrumb";
 import { useDroppable } from "@dnd-kit/react";
+import { Ellipsis } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Nav = ({
   breadcrumbs,
@@ -19,16 +21,28 @@ const Nav = ({
   });
   const route = useRouter();
   const path = "dashboard";
+  let truncatedCrmbs = breadcrumbs;
+  if (breadcrumbs.length > 2) {
+    truncatedCrmbs = breadcrumbs.slice(-2);
+  }
+  const handelClick = async () => {
+    route.push(`/${path}`);
+  };
+
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink ref={dropRef} onClick={() => route.push(`/${path}`)}>
-            My Drive
-          </BreadcrumbLink>
+          {breadcrumbs.length < 2 ? (
+            <BreadcrumbLink ref={dropRef} onClick={handelClick}>
+              Drive
+            </BreadcrumbLink>
+          ) : (
+            <Ellipsis />
+          )}
         </BreadcrumbItem>
         <BreadcrumbSeparator />
-        {breadcrumbs?.map((item) => (
+        {truncatedCrmbs?.map((item) => (
           <BreadcrumbItems key={item.id} breadcrumb={item} />
         ))}
       </BreadcrumbList>
@@ -46,13 +60,13 @@ const BreadcrumbItems = ({
   });
   const route = useRouter();
   const path = "dashboard";
+  const handelClick = async () => {
+    route.push(`/${path}/${breadcrumb.id}`);
+  };
   return (
     <div className="flex items-center gap-1.5">
       <BreadcrumbItem ref={dropRef}>
-        <BreadcrumbLink
-          className="w-15 truncate"
-          onClick={() => route.push(`/${path}/${breadcrumb.id}`)}
-        >
+        <BreadcrumbLink className="w-15 truncate" onClick={handelClick}>
           {breadcrumb.name}
         </BreadcrumbLink>
       </BreadcrumbItem>

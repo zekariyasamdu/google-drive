@@ -52,7 +52,7 @@ export const ourFileRouter = {
         return;
       }
       const fileData = {
-        owner_id: String(metadata.userId),
+        owner_id: metadata.userId,
         name: file.name,
         parent: metadata.parentId,
         url: file.ufsUrl,
@@ -61,6 +61,7 @@ export const ourFileRouter = {
         trash: false,
         star: false,
       };
+      console.log(fileData);
       await MUTATION.createFile(fileData);
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback

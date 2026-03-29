@@ -14,34 +14,18 @@ export default function CreateFolderDialog({
   opened,
   setIsOpen,
 }: {
-  variant?: "item" | "header";
-  opened?: boolean;
-  setIsOpen?: (action: Action) => void;
+  variant: "item" | "header";
+  opened: boolean;
+  setIsOpen: (action: Action) => void;
 }) {
-  if (
-    variant === "header" &&
-    (setIsOpen === undefined || opened === undefined)
-  ) {
-    throw new Error(
-      "Variant 'header' requires 'opened' and 'setIsOpen' props.",
-    );
-  }
-
-  const dialogAttributes =
-    variant === "header"
-      ? {
-          open: opened,
-          onOpenChange: (open: boolean) => {
-            setIsOpen?.({ type: "toggleFolder", state: open });
-          },
-        }
-      : {};
-
   return (
-    <Dialog {...dialogAttributes}>
-      {variant == "header" ? (
-        ""
-      ) : (
+    <Dialog
+      open={opened}
+      onOpenChange={(open: boolean) => {
+        setIsOpen?.({ type: "toggleFolder", state: open });
+      }}
+    >
+      {variant !== "header" && (
         <DialogTrigger asChild>
           <Button className="w-20">Folder</Button>
         </DialogTrigger>
@@ -50,7 +34,7 @@ export default function CreateFolderDialog({
         <DialogHeader>
           <DialogTitle>Add folder</DialogTitle>
         </DialogHeader>
-        <CreateFolderForm />
+        <CreateFolderForm setIsOpen={setIsOpen} />
       </DialogContent>
     </Dialog>
   );
