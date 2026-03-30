@@ -45,9 +45,7 @@ export default function CreateFolderForm({
 
       context.client.setQueryData(
         queryKey,
-        (
-          old: { folders: TFolderSelect[]; files: TFileSelect[] } | undefined,
-        ) => {
+        (old: { folders: TFolderSelect[]; files: TFileSelect[] }) => {
           const current = old ?? { folders: [], files: [] };
 
           return {
@@ -130,7 +128,7 @@ export default function CreateFolderForm({
           disabled={mutation.isPending}
           form="form-folder-create"
           type="submit"
-          className="w-20"
+          className="sm:w-20"
         >
           {mutation.isPending ? <Spinner /> : "Create"}
         </Button>
