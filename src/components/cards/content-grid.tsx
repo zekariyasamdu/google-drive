@@ -39,9 +39,7 @@ export const ContentContainer = ({
   const path = usePathname();
   const { routeName, folderId } = processPath(path);
   const { data: session } = authClient.useSession();
-
   const queryKey = ["folderAndFile", routeName, folderId];
-
   const folderAndFileQuery = useQuery<{
     folders: TFolderSelect[];
     files: TFileSelect[];

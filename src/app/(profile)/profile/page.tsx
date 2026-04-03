@@ -11,6 +11,7 @@ import DeleteImageDialog from "~/components/dialogs/delete-profile-picture";
 import Link from "next/link";
 import SignoutDialog from "~/components/dialogs/signout-account";
 import PhoneNav from "~/components/phone-navbar";
+import ImageViewer from "~/components/dialogs/image-viewer";
 
 const Profile = async () => {
   const session = await auth.api.getSession({
@@ -37,19 +38,19 @@ const Profile = async () => {
             Profile Picture
           </label>
           <div className="flex flex-col items-center justify-center gap-6">
-            <Link
-              className="h-30 w-30 overflow-hidden rounded-full"
-              href={profilePicture ?? "/images/no-pfp.jpg"}
-              target="_blank"
-            >
-              <Image
-                src={profilePicture ?? "/images/no-pfp.jpg"}
-                alt="profile picture"
-                width={500}
-                height={500}
-                className="h-full w-full object-cover"
-              />
-            </Link>
+            {profilePicture ? (
+              <ImageViewer src={profilePicture} preview={true} />
+            ) : (
+              <div className="h-30 w-30 overflow-hidden rounded-full">
+                <Image
+                  src={"/images/no-pfp.jpg"}
+                  alt="profile picture"
+                  width={500}
+                  height={500}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
             <div className="flex flex-row gap-6">
               <ChangeProfilePictureDialog />
               <DeleteImageDialog />

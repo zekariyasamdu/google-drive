@@ -6,12 +6,20 @@ const Dashboard = async () => {
   const session = await verifyUser();
   const userId = session.user.id;
 
-  const [folders, files, parents] = await Promise.all([
+  const [folders, files, parents, isGrid] = await Promise.all([
     QUERIES.getFolderExcludingTrahsed(userId, null),
     QUERIES.getFilesExcludingTrashed(userId, null),
     QUERIES.getAllParents(null),
+    QUERIES.isGrid(userId),
   ]);
-
-  return <DriveContent folders={folders} files={files} parents={parents} />;
+  console.log("is_grid: ", isGrid);
+  return (
+    <DriveContent
+      folders={folders}
+      files={files}
+      parents={parents}
+      initialIsGrid={isGrid}
+    />
+  );
 };
 export default Dashboard;

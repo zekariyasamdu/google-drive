@@ -108,10 +108,6 @@ export default function DNDWrapper({
         const droppedOnId = getIdNumber(target?.id);
         if (droppedOnId === undefined) return;
 
-        console.log("dropped", draggedId);
-        console.log("parent", parent);
-        console.log("droppedOn", droppedOnId);
-
         if (!draggedId || draggedId === droppedOnId || droppedOnId === parent)
           return;
 

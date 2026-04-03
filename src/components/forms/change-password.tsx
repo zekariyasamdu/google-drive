@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Controller, useForm } from "react-hook-form";
@@ -21,26 +21,26 @@ const RenameSchema = z
     confirmNewPassword: z
       .string()
       .min(8, "Username field has to have more than 8 characters"),
-  }).refine(data => data.newPassword === data.confirmNewPassword, {
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
     path: ["confirmNewPassword"],
     message: "Password do not match",
   });
 
 export default function ChangePassword() {
-  const route = useRouter()
+  const route = useRouter();
   const form = useForm<z.infer<typeof RenameSchema>>({
     resolver: zodResolver(RenameSchema),
     defaultValues: {
       newPassword: "",
       currentPassword: "",
-      confirmNewPassword: ""
-    }
+      confirmNewPassword: "",
+    },
   });
   const changePasswordMutation = useMutation({
     mutationKey: ["changeName"],
     mutationFn: async (formData: z.infer<typeof RenameSchema>) => {
-      const typeOfSignIn = await authClient.listAccounts();
-      console.log(typeOfSignIn.data)
+      // const typeOfSignIn = await authClient.listAccounts();
 
       const { data, error } = await authClient.changePassword({
         newPassword: formData.newPassword,
@@ -49,34 +49,36 @@ export default function ChangePassword() {
       });
 
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
       }
 
       return data;
     },
     onSuccess: () => {
-      toast.success("Password Changed!")
+      toast.success("Password Changed!");
       route.refresh();
     },
     onError: (e) => {
-      toast.error(e.message ?? "Error occured!")
+      toast.error(e.message ?? "Error occured!");
     },
   });
 
   return (
-
     <div>
-      <form id="form-change-password" onSubmit={form.handleSubmit(data => changePasswordMutation.mutate(data))}>
+      <form
+        id="form-change-password"
+        onSubmit={form.handleSubmit((data) =>
+          changePasswordMutation.mutate(data),
+        )}
+      >
         <FieldGroup>
           <Controller
             name="currentPassword"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel>
-                  Current Password
-                </FieldLabel>
-                <div className="flex flex-col gap-1 items-center ">
+                <FieldLabel>Current Password</FieldLabel>
+                <div className="flex flex-col items-center gap-1">
                   <Input
                     {...field}
                     autoComplete="off"
@@ -97,10 +99,8 @@ export default function ChangePassword() {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel>
-                  New Password
-                </FieldLabel>
-                <div className="flex flex-col gap-1 items-center ">
+                <FieldLabel>New Password</FieldLabel>
+                <div className="flex flex-col items-center gap-1">
                   <Input
                     {...field}
                     autoComplete="off"
@@ -121,10 +121,8 @@ export default function ChangePassword() {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field>
-                <FieldLabel>
-                  Confirm New Password
-                </FieldLabel>
-                <div className="flex flex-col gap-1 items-center ">
+                <FieldLabel>Confirm New Password</FieldLabel>
+                <div className="flex flex-col items-center gap-1">
                   <Input
                     {...field}
                     autoComplete="off"
@@ -142,15 +140,14 @@ export default function ChangePassword() {
 
           <Button
             form="form-change-password"
-            disabled={form.formState.isSubmitting || changePasswordMutation.isPending}
+            disabled={
+              form.formState.isSubmitting || changePasswordMutation.isPending
+            }
           >
             Change password
           </Button>
-
-
         </FieldGroup>
       </form>
-
     </div>
   );
 }

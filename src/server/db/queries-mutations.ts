@@ -128,8 +128,18 @@ export const QUERIES = {
       .from(filesSchema)
       .where(and(eq(filesSchema.owner_id, userId)));
   },
+  // grid
+  async isGrid(userId: string) {
+    const result = await db
+      .select({ is_grid: user.is_grid })
+      .from(user)
+      .where(eq(user.id, userId));
+
+    return result[0]?.is_grid ?? false;
+  },
 };
 
+// mutations
 export const MUTATION = {
   createFolder: (folder: TFolderInsert) => {
     return db.insert(foldersSchema).values(folder);
@@ -160,5 +170,9 @@ export const MUTATION = {
       .update(user)
       .set({ ...updateData })
       .where(eq(user.id, userId));
+  },
+  setGrid(userId: string, is_grid: boolean) {
+    console.log("is_grid_request: ", is_grid);
+    return db.update(user).set({ is_grid }).where(eq(user.id, userId));
   },
 };

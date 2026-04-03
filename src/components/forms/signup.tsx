@@ -57,12 +57,12 @@ export default function SignupForm() {
     },
     onSuccess: () => {
       toast.success("Account created successfully");
+      router.push("/auth/login");
     },
     onError: (e) => {
       toast.error(e.message);
     },
   });
-  console.log(signupEmailAndPassword.isPending);
   const navToLogin = () => {
     router.push("/auth/login");
   };
@@ -145,7 +145,7 @@ export default function SignupForm() {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field>
-                  <FieldLabel>re-enter password</FieldLabel>
+                  <FieldLabel>conform password</FieldLabel>
                   <Input
                     {...field}
                     required

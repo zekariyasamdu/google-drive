@@ -1,5 +1,12 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  index,
+  bigint,
+} from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -13,6 +20,13 @@ export const user = pgTable("user", {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
   imageFileKey: text("image_file_key"),
+  is_grid: boolean("is_grid").notNull().default(true),
+  max_storage_size: bigint("max_storage_size", { mode: "number" }).default(
+    104857600,
+  ),
+  current_storage_size: bigint("current_storage_size", {
+    mode: "number",
+  }).default(0),
 });
 
 export const session = pgTable(

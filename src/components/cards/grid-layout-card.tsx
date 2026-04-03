@@ -78,7 +78,6 @@ export function GridLayoutItem({
   function navigateToFolder(parentId: number) {
     route.push(`/dashboard/${parentId}`);
   }
-  // w-1/6
   return (
     <Card
       ref={(el) => {

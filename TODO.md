@@ -1,6 +1,8 @@
 ## Main TODO
 
-- [ ] optimisic updates
+- [x] optimisic updates
+- [ ] final touches
+  - [ ]
 - [ ] add Tests
   - [ ] unit tests vitest
   - [ ] cypress for E2E

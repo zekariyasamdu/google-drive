@@ -1,5 +1,8 @@
+"use client";
+import { useMutation } from "@tanstack/react-query";
 import { List, LayoutGrid } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
+import { updateToggle } from "~/server/actions/mutation-actions";
 
 export function GridListToggle({
   isGrid,
@@ -8,13 +11,20 @@ export function GridListToggle({
   isGrid: boolean;
   setIsGrid: Dispatch<SetStateAction<boolean>>;
 }) {
+  const mutation = useMutation({
+    mutationFn: async (open: boolean) => {
+      await updateToggle(open);
+    },
+  });
   return (
     <div
       className="bg-secondary/50 flex cursor-pointer items-center rounded-lg border p-1"
       onClick={() => {
         setIsGrid((prev) => {
           const next = !prev;
-          localStorage.setItem("itemView", next ? "grid" : "list");
+
+          console.log(next);
+          mutation.mutate(next);
           return next;
         });
       }}

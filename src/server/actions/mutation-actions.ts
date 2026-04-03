@@ -121,6 +121,13 @@ export async function deleteProfilePicture() {
   ]);
 }
 
+export async function updateToggle(is_grid: boolean) {
+  const session = await verifyUser();
+  const userId = session.user.id;
+  await MUTATION.setGrid(userId, is_grid);
+  return;
+}
+
 export async function revalidatePathMutation(path: string) {
   revalidatePath(path, "page");
 }

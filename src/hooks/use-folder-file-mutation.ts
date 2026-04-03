@@ -40,20 +40,12 @@ export function useFolderFileMutation() {
             const newFolders = current.folders.filter(
               (item) => item.id !== itemId,
             );
-            console.log({
-              folders: newFolders,
-              files: current.files,
-            });
             return {
               folders: newFolders,
               files: current.files,
             };
           }
           const newFiles = current.files.filter((item) => item.id !== itemId);
-          console.log({
-            folders: current.folders,
-            files: newFiles,
-          });
           return {
             folders: current.folders,
             files: newFiles,
@@ -106,10 +98,6 @@ export function useFolderFileMutation() {
           const current = old ?? { folders: [], files: [] };
           if (isFile) {
             const newFiles = current.files.filter((item) => item.id !== itemId);
-            console.log({
-              folders: current.folders,
-              files: newFiles,
-            });
             return {
               folders: current.folders,
               files: newFiles,
@@ -118,10 +106,7 @@ export function useFolderFileMutation() {
           const newFolders = current.folders.filter(
             (item) => item.id !== itemId,
           );
-          console.log({
-            folders: newFolders,
-            files: current.files,
-          });
+
           return {
             folders: newFolders,
             files: current.files,

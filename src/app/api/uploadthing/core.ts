@@ -61,7 +61,6 @@ export const ourFileRouter = {
         trash: false,
         star: false,
       };
-      console.log(fileData);
       await MUTATION.createFile(fileData);
 
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
