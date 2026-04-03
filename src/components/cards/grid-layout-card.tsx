@@ -22,30 +22,34 @@ import {
 import ImageViewer from "../dialogs/image-viewer";
 import { useFolderFileMutation } from "~/hooks/use-folder-file-mutation";
 import { useDraggable, useDroppable } from "@dnd-kit/react";
-import { cn } from "~/lib/utils";
+import { cn, processPath } from "~/lib/utils";
 
 export function GridLayoutItem({
   item,
+  isFocused,
+  setIsFocused,
 }: {
   item: TFolderSelect | TFileSelect;
+  isFocused: number | null;
+  setIsFocused: (id: number | null) => void;
 }) {
   const [isOpened, _toggleDialog] = useState(false);
   const { deleteMutation, trashMutation, starMutation } =
     useFolderFileMutation();
   const route = useRouter();
   const currentPath = usePathname();
-  const pathArray = currentPath.split("/");
-  const currentPathString = pathArray[1];
+  const { routeName } = processPath(currentPath);
   const isAFile = isFile(item);
-  const isInTrash = currentPathString === "trash";
+  const isSelected = isFocused === item.id ? true : false;
+  const isInTrash = routeName === "trash";
   const { ref: dragRef, isDragSource } = useDraggable({
     id: `draggable-${item.id}`,
     data: { isAFile, parent: item.parent },
-    disabled: currentPathString !== "dashboard",
+    disabled: routeName !== "dashboard" || !isFocused,
   });
   const { ref: dropRef } = useDroppable({
     id: `droppable-${item.id}`,
-    disabled: isAFile || currentPathString !== "dashboard",
+    disabled: isAFile || routeName !== "dashboard",
   });
   const handleStar = () =>
     starMutation.mutate({
@@ -78,13 +82,27 @@ export function GridLayoutItem({
   function navigateToFolder(parentId: number) {
     route.push(`/dashboard/${parentId}`);
   }
+
   return (
     <Card
       ref={(el) => {
         dragRef(el);
         dropRef(el);
       }}
-      className="relative h-45 w-55 gap-2 sm:w-40 md:w-45 lg:w-40 xl:w-40"
+      onClick={() => {
+        if (isSelected && !isAFile && !isInTrash) {
+          navigateToFolder(item.id);
+        }
+
+        if (isSelected && isAFile) {
+        }
+
+        setIsFocused(item.id);
+      }}
+      className={cn(
+        "relative h-39 w-55 gap-2 sm:w-40 md:w-45 lg:w-40 xl:w-40",
+        isSelected && "cursor-grab border border-blue-300 bg-transparent",
+      )}
     >
       <CardAction className={"absolute top-2 right-2"}>
         <DropdownMenu>
@@ -150,16 +168,6 @@ export function GridLayoutItem({
             <Folder className="h-11 w-11" />
           </CardHeader>
           <CardTitle className="w-full truncate px-6">{item.name}</CardTitle>
-          {isInTrash ? (
-            ""
-          ) : (
-            <CardAction
-              className="flex cursor-pointer gap-3 pl-6 text-blue-600"
-              onClick={() => navigateToFolder(item.id)}
-            >
-              open
-            </CardAction>
-          )}
         </>
       )}
     </Card>

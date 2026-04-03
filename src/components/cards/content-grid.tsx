@@ -19,6 +19,7 @@ import { EmptyFolder } from "../empty/empty-folder";
 import { EmptyStar } from "../empty/empty-star";
 import { processPath } from "~/lib/utils";
 import { EmptyTrash } from "../empty/empty-trash";
+import { useState } from "react";
 type UserView = "dashboard" | "star" | "trash";
 
 const userView: Record<UserView, React.ReactNode> = {
@@ -40,6 +41,10 @@ export const ContentContainer = ({
   const { routeName, folderId } = processPath(path);
   const { data: session } = authClient.useSession();
   const queryKey = ["folderAndFile", routeName, folderId];
+  const [isFocused, _setIsFocused] = useState<null | number>(null);
+  function setIsFocused(id: null | number) {
+    _setIsFocused(id);
+  }
   const folderAndFileQuery = useQuery<{
     folders: TFolderSelect[];
     files: TFileSelect[];
@@ -83,10 +88,20 @@ export const ContentContainer = ({
       {isGrid ? (
         <>
           {result?.folders?.map((item) => (
-            <GridLayoutItem key={item.id} item={item} />
+            <GridLayoutItem
+              key={item.id}
+              item={item}
+              isFocused={isFocused}
+              setIsFocused={setIsFocused}
+            />
           ))}
           {result?.files?.map((item) => (
-            <GridLayoutItem key={item.id} item={item} />
+            <GridLayoutItem
+              key={item.id}
+              item={item}
+              isFocused={isFocused}
+              setIsFocused={setIsFocused}
+            />
           ))}
         </>
       ) : (
@@ -101,10 +116,20 @@ export const ContentContainer = ({
           </TableHeader>
           <TableBody>
             {result?.folders?.map((item) => (
-              <ListLayoutItem key={item.id} item={item} />
+              <ListLayoutItem
+                key={item.id}
+                item={item}
+                isFocused={isFocused}
+                setIsFocused={setIsFocused}
+              />
             ))}
             {result?.files?.map((item) => (
-              <ListLayoutItem key={item.id} item={item} />
+              <ListLayoutItem
+                key={item.id}
+                item={item}
+                isFocused={isFocused}
+                setIsFocused={setIsFocused}
+              />
             ))}
           </TableBody>
         </Table>

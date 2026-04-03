@@ -13,18 +13,21 @@ import {
   DropdownMenuPortal,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import ImageViewer from "../dialogs/image-viewer";
 import { useFolderFileMutation } from "~/hooks/use-folder-file-mutation";
 import { useDraggable, useDroppable } from "@dnd-kit/react";
-import { cn } from "~/lib/utils";
+import { cn, processPath } from "~/lib/utils";
 import { TableCell, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
 import ImageViewerListLayout from "../dialogs/image-viewer-list-layout";
 
 export function ListLayoutItem({
   item,
+  isFocused,
+  setIsFocused,
 }: {
   item: TFolderSelect | TFileSelect;
+  isFocused: number | null;
+  setIsFocused: (id: number | null) => void;
 }) {
   const [isOpenedRename, _toggleDialogRename] = useState(false);
   const [isOpened, _toggleDialog] = useState(false);
@@ -32,18 +35,18 @@ export function ListLayoutItem({
     useFolderFileMutation();
   const route = useRouter();
   const currentPath = usePathname();
-  const pathArray = currentPath.split("/");
-  const currentPathString = pathArray[1];
+  const { routeName } = processPath(currentPath);
   const isAFile = isFile(item);
-  const isInTrash = currentPathString === "trash";
+  const isSelected = isFocused === item.id ? true : false;
+  const isInTrash = routeName === "trash";
   const { ref: dragRef, isDragSource } = useDraggable({
     id: `draggable-${item.id}`,
     data: { isAFile, parent: item.parent },
-    disabled: currentPathString !== "dashboard",
+    disabled: routeName !== "dashboard" || !isFocused,
   });
   const { ref: dropRef } = useDroppable({
     id: `droppable-${item.id}`,
-    disabled: isAFile || currentPathString !== "dashboard",
+    disabled: isAFile || routeName !== "dashboard",
   });
   const handleStar = () =>
     starMutation.mutate({
@@ -83,7 +86,21 @@ export function ListLayoutItem({
         dragRef(el);
         dropRef(el);
       }}
-      className={cn("group")}
+      onClick={() => {
+        if (isSelected && !isAFile && !isInTrash) {
+          navigateToFolder(item.id);
+        }
+
+        if (isSelected && isAFile) {
+        }
+
+        setIsFocused(item.id);
+      }}
+      className={cn(
+        "group",
+
+        isSelected && "cursor-grab border border-blue-300 bg-transparent",
+      )}
     >
       <TableCell className="overflow-hidden font-medium">
         <div className="flex items-center gap-3">
@@ -119,11 +136,7 @@ export function ListLayoutItem({
                     Open
                   </DropdownMenuItem>
                 ) : (
-                  !isInTrash && (
-                    <DropdownMenuItem onClick={() => navigateToFolder(item.id)}>
-                      Open
-                    </DropdownMenuItem>
-                  )
+                  ""
                 )}
 
                 <DropdownMenuItem onClick={handleStar}>

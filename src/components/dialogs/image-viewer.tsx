@@ -22,7 +22,7 @@ export default function ImageViewer({
             />
           </div>
         ) : (
-          "open"
+          "view"
         )}
       </DialogTrigger>
       <DialogContent
