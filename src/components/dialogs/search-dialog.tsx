@@ -44,7 +44,6 @@ export default function SearchDialog({
     },
     {
       wait: 500,
-      onSuccess: (results) => {},
       onError: (error) => {
         console.error("Search failed:", error);
         toast.error("Search failed");

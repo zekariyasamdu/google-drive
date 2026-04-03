@@ -4,7 +4,6 @@ import { user, session, account, verification } from "../db/schema";
 import { nextCookies } from "better-auth/next-js";
 import { Resend } from "resend";
 import { VerifyEmail } from "./components/VerifyEmail";
-import { DeleteAccountEmail } from "./components/DeleteAccountEmail";
 import { db } from "../db";
 import { env } from "~/env";
 
