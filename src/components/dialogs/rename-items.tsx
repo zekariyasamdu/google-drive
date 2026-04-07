@@ -30,7 +30,7 @@ export default function RenameDialog({
         <DialogHeader>
           <DialogTitle>Rename {variant}</DialogTitle>
         </DialogHeader>
-        <RenameItemsForm variant={variant} itemId={itemId} fileKey={fileKey} />
+        <RenameItemsForm itemId={itemId} fileKey={fileKey} />
       </DialogContent>
     </Dialog>
   );

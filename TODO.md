@@ -1,6 +1,5 @@
 ## Main TODO
 
-- [x] optimisic updates
 - [ ] final touches
   - [ ]
 - [ ] add Tests

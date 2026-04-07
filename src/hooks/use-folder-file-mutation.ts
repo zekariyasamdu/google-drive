@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
+import z from "zod";
+import type { createFolderSchema } from "~/components/forms/rename-item";
 import type { TFolderSelect, TFileSelect } from "~/lib/types/db";
 import { processPath } from "~/lib/utils";
 import {
@@ -136,15 +138,54 @@ export function useFolderFileMutation() {
 
   const starMutation = useMutation({
     mutationKey: ["starItem"],
-    mutationFn: async ({
-      itemId,
-      isFile,
-      state,
-    }: {
-      itemId: number;
-      isFile: boolean;
-      state: boolean;
-    }) => {
+    mutationFn: async (
+      {
+        itemId,
+        isFile,
+        state,
+      }: {
+        itemId: number;
+        isFile: boolean;
+        state: boolean;
+      },
+      context,
+    ) => {
+      await context.client.cancelQueries({ queryKey });
+      let previousTodos = context.client.getQueryData(queryKey);
+      previousTodos = previousTodos ?? { folders: [], files: [] };
+
+      context.client.setQueryData(
+        queryKey,
+        (old: { folders: TFolderSelect[]; files: TFileSelect[] }) => {
+          const current = old ?? { folders: [], files: [] };
+
+          if (isFile) {
+            const remainingFiles = current.files.filter(
+              (item) => item.id !== itemId,
+            );
+            const targetFile = current.files.find((item) => item.id === itemId);
+            if (!targetFile) return;
+
+            return {
+              folders: current.folders,
+              files: [...remainingFiles, { ...targetFile, star: state }],
+            };
+          }
+
+          const targetFolder = current.folders.find(
+            (item) => item.id === itemId,
+          );
+          const remainingFolders = current.folders.filter(
+            (item) => item.id !== itemId,
+          );
+          if (!targetFolder) return;
+
+          return {
+            folders: [...remainingFolders, { ...targetFolder, star: state }],
+            files: current.files,
+          };
+        },
+      );
       if (isFile) {
         await updateFileAction(itemId, { star: state });
         return;
@@ -155,9 +196,75 @@ export function useFolderFileMutation() {
     onSettled: () => queryClient.invalidateQueries({ queryKey }),
   });
 
+  const renameMutation = useMutation({
+    mutationKey: ["renameItem"],
+    mutationFn: async (
+      {
+        itemId,
+        fileKey,
+        formData,
+      }: {
+        itemId: number;
+        fileKey: string | undefined;
+        formData: z.infer<typeof createFolderSchema>;
+      },
+      context,
+    ) => {
+      await context.client.cancelQueries({ queryKey });
+      let previousTodos = context.client.getQueryData(queryKey);
+      previousTodos = previousTodos ?? { folders: [], files: [] };
+
+      context.client.setQueryData(
+        queryKey,
+        (old: { folders: TFolderSelect[]; files: TFileSelect[] }) => {
+          const current = old ?? { folders: [], files: [] };
+
+          if (fileKey) {
+            const remainingFiles = current.files.filter(
+              (item) => item.id !== itemId,
+            );
+            const targetFile = current.files.find((item) => item.id === itemId);
+            if (!targetFile) return;
+
+            return {
+              folders: current.folders,
+              files: [
+                ...remainingFiles,
+                { ...targetFile, name: formData.name },
+              ],
+            };
+          }
+
+          const targetFolder = current.folders.find(
+            (item) => item.id === itemId,
+          );
+          const remainingFolders = current.folders.filter(
+            (item) => item.id !== itemId,
+          );
+          if (!targetFolder) return;
+
+          return {
+            folders: [
+              ...remainingFolders,
+              { ...targetFolder, name: formData.name },
+            ],
+            files: current.files,
+          };
+        },
+      );
+
+      if (fileKey) {
+        return await updateFileAction(itemId, { name: formData.name }, fileKey);
+      }
+      return await updateFolderAction(itemId, { name: formData.name });
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey }),
+  });
+
   return {
     deleteMutation,
     trashMutation,
     starMutation,
+    renameMutation,
   };
 }

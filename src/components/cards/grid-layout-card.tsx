@@ -95,18 +95,25 @@ export function GridLayoutItem({
         }
 
         if (isSelected && isAFile) {
+          setIsFocused(null);
         }
 
         setIsFocused(item.id);
       }}
       className={cn(
         "relative h-39 w-55 gap-2 sm:w-40 md:w-45 lg:w-40 xl:w-40",
+        item.star && "border-amber-400",
         isSelected && "cursor-grab border border-blue-300 bg-transparent",
       )}
     >
       <CardAction className={"absolute top-2 right-2"}>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            asChild
+          >
             <Ellipsis className="cursor-pointer" />
           </DropdownMenuTrigger>
           <DropdownMenuPortal>
@@ -155,7 +162,7 @@ export function GridLayoutItem({
             <File className="h-11 w-11" />
           </CardHeader>
           <CardDescription className="absolute right-2 bottom-2 pl-6">
-            {filesize(item.size)}
+            <div>{filesize(item.size)}</div>
           </CardDescription>
           <CardTitle className="w-full truncate px-6">{item.name}</CardTitle>
           <CardAction className="flex cursor-pointer gap-3 pl-6">
