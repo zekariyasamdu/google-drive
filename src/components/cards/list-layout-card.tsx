@@ -1,4 +1,3 @@
-import { CardAction, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Ellipsis, Folder, File } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { type TFolderSelect, type TFileSelect, isFile } from "~/lib/types/db";
@@ -18,7 +17,7 @@ import { useDraggable, useDroppable } from "@dnd-kit/react";
 import { cn, processPath } from "~/lib/utils";
 import { TableCell, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
-import ImageViewerListLayout from "../dialogs/image-viewer-list-layout";
+import ImageViewer from "../dialogs/image-viewer";
 
 export function ListLayoutItem({
   item,
@@ -30,7 +29,7 @@ export function ListLayoutItem({
   setIsFocused: (id: number | null) => void;
 }) {
   const [isOpenedRename, _toggleDialogRename] = useState(false);
-  const [isOpened, _toggleDialog] = useState(false);
+  const [isOpenedImage, _toggleImageDialog] = useState(false);
   const { deleteMutation, trashMutation, starMutation } =
     useFolderFileMutation();
   const route = useRouter();
@@ -42,7 +41,7 @@ export function ListLayoutItem({
   const { ref: dragRef, isDragSource } = useDraggable({
     id: `draggable-${item.id}`,
     data: { isAFile, parent: item.parent },
-    disabled: routeName !== "dashboard" || !isFocused,
+    disabled: routeName !== "dashboard" || !isFocused || !isSelected,
   });
   const { ref: dropRef } = useDroppable({
     id: `droppable-${item.id}`,
@@ -88,21 +87,25 @@ export function ListLayoutItem({
       }}
       onClick={() => {
         if (isSelected && !isAFile && !isInTrash) {
+          setIsFocused(null);
           navigateToFolder(item.id);
+          return;
         }
 
         if (isSelected && isAFile) {
+          _toggleImageDialog(true);
+          setIsFocused(null);
+          return;
         }
 
         setIsFocused(item.id);
       }}
       className={cn(
-        "group",
-
-        isSelected && "cursor-grab border border-blue-300 bg-transparent",
+        "group cursor-pointer",
+        isSelected && "border border-blue-300 bg-transparent",
       )}
     >
-      <TableCell className="overflow-hidden font-medium">
+      <TableCell className="cursor-pointer overflow-hidden font-medium">
         <div className="flex items-center gap-3">
           {isAFile ? (
             <File className="h-5 w-5" />
@@ -118,10 +121,14 @@ export function ListLayoutItem({
       <TableCell>{isAFile ? filesize(item.size) : "--"}</TableCell>
 
       <TableCell className="text-muted-foreground text-xs uppercase">
-        {isAFile ? item.name.split(".").pop() : "Folder"}
+        {isAFile ? "Image" : "Folder"}
       </TableCell>
 
-      <TableCell>
+      <TableCell
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -131,14 +138,6 @@ export function ListLayoutItem({
           <DropdownMenuPortal>
             <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                {isAFile ? (
-                  <DropdownMenuItem onClick={() => _toggleDialog(true)}>
-                    Open
-                  </DropdownMenuItem>
-                ) : (
-                  ""
-                )}
-
                 <DropdownMenuItem onClick={handleStar}>
                   {item.star ? "Unstar" : "Star"}
                 </DropdownMenuItem>
@@ -167,10 +166,10 @@ export function ListLayoutItem({
           </DropdownMenuPortal>
         </DropdownMenu>
         {isAFile ? (
-          <ImageViewerListLayout
+          <ImageViewer
+            opened={isOpenedImage}
+            setIsOpen={_toggleImageDialog}
             src={item.url}
-            opened={isOpened}
-            setIsOpen={_toggleDialog}
           />
         ) : (
           ""

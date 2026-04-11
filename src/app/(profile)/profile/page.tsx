@@ -8,7 +8,6 @@ import RenameUsernameForm from "~/components/forms/rename-account";
 import ChangePassword from "~/components/forms/change-password";
 import ChangeProfilePictureDialog from "~/components/dialogs/change-profile-picture";
 import DeleteImageDialog from "~/components/dialogs/delete-profile-picture";
-import Link from "next/link";
 import SignoutDialog from "~/components/dialogs/signout-account";
 import PhoneNav from "~/components/phone-navbar";
 import ImageViewer from "~/components/dialogs/image-viewer";

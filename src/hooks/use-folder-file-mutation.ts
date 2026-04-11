@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
-import z from "zod";
+import type z from "zod";
 import type { createFolderSchema } from "~/components/forms/rename-item";
 import type { TFolderSelect, TFileSelect } from "~/lib/types/db";
 import { processPath } from "~/lib/utils";
@@ -168,20 +168,25 @@ export function useFolderFileMutation() {
 
             return {
               folders: current.folders,
-              files: [...remainingFiles, { ...targetFile, star: state }],
+              files: [...remainingFiles, { ...targetFile, star: state }].sort(
+                (a, b) => a.id - b.id,
+              ),
             };
           }
 
-          const targetFolder = current.folders.find(
-            (item) => item.id === itemId,
-          );
           const remainingFolders = current.folders.filter(
             (item) => item.id !== itemId,
+          );
+          const targetFolder = current.folders.find(
+            (item) => item.id === itemId,
           );
           if (!targetFolder) return;
 
           return {
-            folders: [...remainingFolders, { ...targetFolder, star: state }],
+            folders: [
+              ...remainingFolders,
+              { ...targetFolder, star: state },
+            ].sort((a, b) => a.id - b.id),
             files: current.files,
           };
         },
@@ -231,7 +236,7 @@ export function useFolderFileMutation() {
               files: [
                 ...remainingFiles,
                 { ...targetFile, name: formData.name },
-              ],
+              ].sort((a, b) => a.id - b.id),
             };
           }
 
@@ -247,7 +252,7 @@ export function useFolderFileMutation() {
             folders: [
               ...remainingFolders,
               { ...targetFolder, name: formData.name },
-            ],
+            ].sort((a, b) => a.id - b.id),
             files: current.files,
           };
         },

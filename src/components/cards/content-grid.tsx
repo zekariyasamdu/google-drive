@@ -77,7 +77,6 @@ export const ContentContainer = ({
     },
     placeholderData: folderAndFileItems,
   });
-
   const result = folderAndFileQuery.data;
   if (result?.folders.length === 0 && result?.files.length === 0) {
     return <div className="mx-auto mt-5">{userView[routeName]}</div>;

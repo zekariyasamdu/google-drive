@@ -24,13 +24,20 @@ export default function RenameDialog({
       }}
     >
       <DialogContent
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
         aria-describedby="Input new folder or file name dialog form"
         className="sm:max-w-[425px]"
       >
         <DialogHeader>
           <DialogTitle>Rename {variant}</DialogTitle>
         </DialogHeader>
-        <RenameItemsForm itemId={itemId} fileKey={fileKey} />
+        <RenameItemsForm
+          setIsOpen={setIsOpen}
+          itemId={itemId}
+          fileKey={fileKey}
+        />
       </DialogContent>
     </Dialog>
   );

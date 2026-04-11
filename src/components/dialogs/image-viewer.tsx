@@ -1,17 +1,31 @@
+import type { Dispatch, SetStateAction } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import Image from "next/image";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 export default function ImageViewer({
   src,
   preview = false,
+  opened,
+  setIsOpen,
 }: {
   src: string;
   preview?: boolean;
+  opened?: boolean;
+  setIsOpen?: Dispatch<SetStateAction<boolean>>;
 }) {
+  const controlledProps = setIsOpen
+    ? {
+        open: opened,
+        onOpenChange: (open: boolean) => {
+          setIsOpen(open);
+        },
+      }
+    : {};
   return (
-    <Dialog>
-      <DialogTrigger className="text-blue-600">
-        {preview ? (
+    <Dialog {...controlledProps}>
+      {preview ? (
+        <DialogTrigger className="text-blue-600">
           <div className="h-30 w-30 overflow-hidden rounded-full">
             <Image
               src={src}
@@ -21,10 +35,11 @@ export default function ImageViewer({
               className="h-full w-full object-cover"
             />
           </div>
-        ) : (
-          "view"
-        )}
-      </DialogTrigger>
+        </DialogTrigger>
+      ) : (
+        ""
+      )}
+      <DialogTitle></DialogTitle>
       <DialogContent
         className="h-fit w-fit border-none bg-transparent shadow-none"
         showCloseButton={false}

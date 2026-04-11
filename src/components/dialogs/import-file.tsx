@@ -28,7 +28,7 @@ export default function CreateFileDialog({
     >
       {variant !== "header" && (
         <DialogTrigger asChild>
-          <Button className="w-20" variant="outline">
+          <Button className="w-20 hover:text-white" variant="outline">
             File
           </Button>
         </DialogTrigger>

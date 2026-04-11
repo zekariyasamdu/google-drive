@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Ellipsis, Folder, File } from "lucide-react";
+import { Ellipsis, Folder, File, Star } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { type TFolderSelect, type TFileSelect, isFile } from "~/lib/types/db";
 import { useState } from "react";
@@ -33,7 +33,8 @@ export function GridLayoutItem({
   isFocused: number | null;
   setIsFocused: (id: number | null) => void;
 }) {
-  const [isOpened, _toggleDialog] = useState(false);
+  const [isOpenedRename, _toggleRenameDialog] = useState(false);
+  const [isOpenedImage, _toggleImageDialog] = useState(false);
   const { deleteMutation, trashMutation, starMutation } =
     useFolderFileMutation();
   const route = useRouter();
@@ -45,7 +46,7 @@ export function GridLayoutItem({
   const { ref: dragRef, isDragSource } = useDraggable({
     id: `draggable-${item.id}`,
     data: { isAFile, parent: item.parent },
-    disabled: routeName !== "dashboard" || !isFocused,
+    disabled: routeName !== "dashboard" || !isFocused || !isSelected,
   });
   const { ref: dropRef } = useDroppable({
     id: `droppable-${item.id}`,
@@ -91,21 +92,29 @@ export function GridLayoutItem({
       }}
       onClick={() => {
         if (isSelected && !isAFile && !isInTrash) {
+          setIsFocused(null);
           navigateToFolder(item.id);
+          return;
         }
 
         if (isSelected && isAFile) {
+          _toggleImageDialog(true);
           setIsFocused(null);
+          return;
         }
 
         setIsFocused(item.id);
       }}
       className={cn(
         "relative h-39 w-55 gap-2 sm:w-40 md:w-45 lg:w-40 xl:w-40",
-        item.star && "border-amber-400",
-        isSelected && "cursor-grab border border-blue-300 bg-transparent",
+        isSelected && "border border-blue-300 bg-transparent",
       )}
     >
+      <div
+        className={cn("absolute bottom-2 left-5", !item.star && "invisible")}
+      >
+        <Star />
+      </div>
       <CardAction className={"absolute top-2 right-2"}>
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -117,7 +126,13 @@ export function GridLayoutItem({
             <Ellipsis className="cursor-pointer" />
           </DropdownMenuTrigger>
           <DropdownMenuPortal>
-            <DropdownMenuContent className="w-56" align="start">
+            <DropdownMenuContent
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              className="w-56"
+              align="start"
+            >
               <DropdownMenuGroup>
                 {item.star ? (
                   <DropdownMenuItem onClick={handleStar}>
@@ -126,7 +141,7 @@ export function GridLayoutItem({
                 ) : (
                   <DropdownMenuItem onClick={handleStar}>Star</DropdownMenuItem>
                 )}
-                <DropdownMenuItem onClick={() => _toggleDialog(true)}>
+                <DropdownMenuItem onClick={() => _toggleRenameDialog(true)}>
                   Rename
                 </DropdownMenuItem>
                 {item.trash ? (
@@ -148,8 +163,8 @@ export function GridLayoutItem({
           </DropdownMenuPortal>
         </DropdownMenu>
         <RenameDialog
-          opened={isOpened}
-          setIsOpen={_toggleDialog}
+          opened={isOpenedRename}
+          setIsOpen={_toggleRenameDialog}
           itemId={item.id}
           {...(isAFile
             ? { fileKey: item.fileKey, variant: "File" }
@@ -166,7 +181,11 @@ export function GridLayoutItem({
           </CardDescription>
           <CardTitle className="w-full truncate px-6">{item.name}</CardTitle>
           <CardAction className="flex cursor-pointer gap-3 pl-6">
-            <ImageViewer src={item.url} />
+            <ImageViewer
+              opened={isOpenedImage}
+              setIsOpen={_toggleImageDialog}
+              src={item.url}
+            />
           </CardAction>
         </>
       ) : (

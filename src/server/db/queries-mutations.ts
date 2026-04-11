@@ -18,7 +18,8 @@ export const QUERIES = {
           eq(filesSchema.owner_id, userId),
           eq(filesSchema.trash, false),
         ),
-      );
+      )
+      .orderBy(filesSchema.id);
   },
   getFolderExcludingTrahsed: (userId: string, itemsParentId: number | null) => {
     return db
@@ -32,7 +33,8 @@ export const QUERIES = {
           eq(foldersSchema.owner_id, userId),
           eq(foldersSchema.trash, false),
         ),
-      );
+      )
+      .orderBy(foldersSchema.id);
   },
   // star
   getStarredFilesExcludingTrashed: (userId: string) => {

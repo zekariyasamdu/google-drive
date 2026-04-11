@@ -9,6 +9,7 @@ import { Button } from "../ui/button";
 import { DialogFooter } from "../ui/dialog";
 import { Spinner } from "../ui/spinner";
 import { useFolderFileMutation } from "~/hooks/use-folder-file-mutation";
+import type { Dispatch, SetStateAction } from "react";
 
 export const createFolderSchema = z.object({
   name: z.string().min(1),
@@ -16,12 +17,13 @@ export const createFolderSchema = z.object({
 
 export default function RenameItemsForm({
   itemId,
+  setIsOpen,
   fileKey,
 }: {
   itemId: number;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
   fileKey?: string;
 }) {
-  const router = useRouter();
   const { renameMutation } = useFolderFileMutation();
   const form = useForm<z.infer<typeof createFolderSchema>>({
     resolver: zodResolver(createFolderSchema),
@@ -36,7 +38,7 @@ export default function RenameItemsForm({
       fileKey,
       formData: data,
     });
-    router.refresh();
+    setIsOpen(false);
   }
 
   return (
