@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { deleteProfilePicture } from "~/server/actions/mutation-actions";
 import { useRouter } from "next/navigation";
+import { Spinner } from "../ui/spinner";
 
 export default function DeleteImageDialog() {
   const route = useRouter();
@@ -35,7 +36,13 @@ export default function DeleteImageDialog() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete</Button>
+        <Button
+          disabled={deleteMutation.isPending}
+          className="w-30"
+          variant="destructive"
+        >
+          {deleteMutation.isPending ? <Spinner /> : "Delete Picture"}
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent size="sm">
         <AlertDialogHeader>

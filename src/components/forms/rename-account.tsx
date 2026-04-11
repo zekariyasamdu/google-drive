@@ -9,6 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { updateUserAction } from "~/server/actions/mutation-actions";
 import { useRouter } from "next/navigation";
+import { Spinner } from "../ui/spinner";
 
 const RenameSchema = z.object({
   name: z.string().min(4, "Username field has to have more than 4 characters"),
@@ -67,12 +68,10 @@ export default function RenameUsernameForm({
 
                   <Button
                     form="form-rename-name"
-                    disabled={
-                      form.formState.isSubmitting ||
-                      changeNameMutation.isPending
-                    }
+                    className="w-20"
+                    disabled={changeNameMutation.isPending}
                   >
-                    Rename
+                    {changeNameMutation.isPending ? <Spinner /> : "Rename"}
                   </Button>
                 </div>
               </Field>
